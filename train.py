@@ -5,8 +5,10 @@ Usage: uv run train.py
 """
 
 import gc
+import json
 import math
 import os
+import subprocess
 import time
 from dataclasses import dataclass
 
@@ -524,3 +526,33 @@ print(f"total_tokens_M:   {total_tokens / 1e6:.1f}")
 print(f"num_steps:        {step}")
 print(f"num_params_M:     {num_params / 1e6:.1f}")
 print(f"depth:            {DEPTH}")
+
+# ---------------------------------------------------------------------------
+# Checkpoint saving
+# ---------------------------------------------------------------------------
+os.makedirs("checkpoints", exist_ok=True)
+try:
+    commit_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], text=True).strip()
+except subprocess.CalledProcessError:
+    commit_hash = "unknown"
+
+weights_path = f"checkpoints/{commit_hash}.safetensors"
+config_path = f"checkpoints/{commit_hash}_config.json"
+
+mx.save_safetensors(weights_path, dict(tree_flatten(model.parameters())))
+
+with open(config_path, "w") as f:
+    json.dump({
+        "sequence_len": config.sequence_len,
+        "vocab_size": config.vocab_size,
+        "n_layer": config.n_layer,
+        "n_head": config.n_head,
+        "n_kv_head": config.n_kv_head,
+        "n_embd": config.n_embd,
+        "window_pattern": config.window_pattern,
+        "val_bpb": val_bpb,
+        "commit": commit_hash,
+    }, f, indent=2)
+
+print(f"Checkpoint saved: {weights_path}")
+print(f"Config saved:     {config_path}")
