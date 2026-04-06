@@ -62,6 +62,45 @@ Sampling options:
 
 ---
 
+## Known Issues & Fixes
+
+### `token_bytes.npy` missing on first run
+
+**Error:**
+```
+FileNotFoundError: Missing token_bytes lookup at ~/.cache/autoresearch/tokenizer/token_bytes.npy. Run prepare.py first.
+```
+
+**Why it happens:** The tokenizer was originally trained by the PyTorch version of this repo, which saved `token_bytes.pt`. The MLX port expects `token_bytes.npy`. Running `prepare.py` would retrain the tokenizer from scratch (slow), but the file can be regenerated directly from the existing `tokenizer.pkl` in seconds.
+
+**Fix:**
+```bash
+uv run python - <<'EOF'
+import pickle, numpy as np, os
+
+TOKENIZER_DIR = os.path.expanduser("~/.cache/autoresearch/tokenizer")
+SPECIAL_TOKENS = [f"<|reserved_{i}|>" for i in range(4)]
+
+with open(os.path.join(TOKENIZER_DIR, "tokenizer.pkl"), "rb") as f:
+    enc = pickle.load(f)
+
+special_set = set(SPECIAL_TOKENS)
+token_bytes_list = []
+for token_id in range(enc.n_vocab):
+    token_str = enc.decode([token_id])
+    token_bytes_list.append(0 if token_str in special_set else len(token_str.encode("utf-8")))
+
+token_bytes = np.array(token_bytes_list, dtype=np.int32)
+out = os.path.join(TOKENIZER_DIR, "token_bytes.npy")
+np.save(out, token_bytes)
+print(f"Saved {len(token_bytes_list)} token byte lengths to {out}")
+EOF
+```
+
+Then re-run `uv run train.py` as normal.
+
+---
+
 ## Pipeline Test Instructions
 
 ### Prerequisites
