@@ -202,7 +202,7 @@ def generate(model, tokenizer, prompt, max_new_tokens, temperature, top_k, seed)
 
     print(prompt, end="", flush=True)
 
-    generated = 0
+    output_tokens = []
     for _ in range(max_new_tokens):
         if ids.shape[1] >= max_seq_len:
             break
@@ -216,10 +216,66 @@ def generate(model, tokenizer, prompt, max_new_tokens, temperature, top_k, seed)
 
         token_str = tokenizer.decode([next_id])
         print(token_str, end="", flush=True)
-        generated += 1
+        output_tokens.append(next_id)
 
     print()
-    return generated
+    generated_text = tokenizer.decode(output_tokens)
+    return generated_text
+
+
+def _prompt_slug(prompt, max_len=40):
+    """Convert a prompt to a safe filename fragment."""
+    import re
+    slug = prompt.lower().strip()
+    slug = re.sub(r"[^a-z0-9]+", "-", slug)
+    slug = slug.strip("-")
+    return slug[:max_len]
+
+
+def save_sample(prompt, generated_text, config, args, samples_dir):
+    """Save generated text and metadata to samples/ for Prolific study use."""
+    import datetime
+
+    os.makedirs(samples_dir, exist_ok=True)
+
+    commit = config.get("commit", "unknown")
+    val_bpb = config.get("val_bpb", 0.0)
+    slug = _prompt_slug(prompt)
+    filename = f"commit-{commit}_bpb{val_bpb:.4f}_seed{args.seed}_{slug}"
+
+    txt_path = os.path.join(samples_dir, filename + ".txt")
+    json_path = os.path.join(samples_dir, filename + ".json")
+
+    full_text = prompt + generated_text
+
+    with open(txt_path, "w") as f:
+        f.write(full_text)
+
+    metadata = {
+        "commit": commit,
+        "val_bpb": val_bpb,
+        "model": {
+            "n_layer": config["n_layer"],
+            "n_embd": config["n_embd"],
+            "n_head": config["n_head"],
+            "window_pattern": config["window_pattern"],
+        },
+        "generation": {
+            "prompt": prompt,
+            "generated_text": generated_text,
+            "full_text": full_text,
+            "max_tokens": args.max_tokens,
+            "temperature": args.temperature,
+            "top_k": args.top_k,
+            "seed": args.seed,
+        },
+        "date": datetime.datetime.now().isoformat(),
+    }
+
+    with open(json_path, "w") as f:
+        json.dump(metadata, f, indent=2)
+
+    return txt_path, json_path
 
 
 # ---------------------------------------------------------------------------
@@ -294,14 +350,35 @@ def resolve_checkpoint(checkpoint_arg, checkpoint_dir="checkpoints"):
     return weights_path, config_path
 
 
+def _set_weight(model, path, value):
+    """Set a weight by dot-separated path, handling both list (int) and dict (str) indexing."""
+    parts = path.split(".")
+    obj = model
+    for part in parts[:-1]:
+        if isinstance(obj, list):
+            obj = obj[int(part)]
+        elif isinstance(obj, dict):
+            obj = obj[part]
+        else:
+            obj = getattr(obj, part)
+    last = parts[-1]
+    if isinstance(obj, list):
+        obj[int(last)] = value
+    elif isinstance(obj, dict):
+        obj[last] = value
+    else:
+        setattr(obj, last, value)
+
+
 def load_model(weights_path, config_path):
     with open(config_path) as f:
         config = json.load(f)
 
     model = GPT(config)
 
-    weights = mx.load(weights_path)
-    model.load_weights(list(weights.items()))
+    weights = dict(mx.load(weights_path))
+    for path, value in weights.items():
+        _set_weight(model, path, value)
     mx.eval(model.parameters())
 
     return model, config
@@ -329,6 +406,10 @@ def main():
                         help="Random seed (default: 0)")
     parser.add_argument("--list-checkpoints", action="store_true",
                         help="List all available checkpoints and exit")
+    parser.add_argument("--samples-dir", type=str, default="samples",
+                        help="Directory to save generated samples (default: samples/)")
+    parser.add_argument("--no-save", action="store_true",
+                        help="Print to terminal only, do not save to disk")
     args = parser.parse_args()
 
     if args.list_checkpoints:
@@ -343,7 +424,7 @@ def main():
     tokenizer = Tokenizer.from_directory()
 
     print(f"\n{'─' * 60}")
-    n = generate(
+    generated_text = generate(
         model, tokenizer, args.prompt,
         max_new_tokens=args.max_tokens,
         temperature=args.temperature,
@@ -351,7 +432,12 @@ def main():
         seed=args.seed,
     )
     print(f"{'─' * 60}")
-    print(f"Generated {n} tokens.")
+    print(f"Generated {len(generated_text)} characters.")
+
+    if not args.no_save:
+        txt_path, json_path = save_sample(args.prompt, generated_text, config, args, args.samples_dir)
+        print(f"Saved: {txt_path}")
+        print(f"       {json_path}")
 
 
 if __name__ == "__main__":

@@ -101,59 +101,131 @@ Then re-run `uv run train.py` as normal.
 
 ---
 
-## Pipeline Test Instructions
+## Full Pipeline: Commands to Get It Running
 
-### Prerequisites
+### Step 1 — (If needed) Fix the PyTorch tokenizer issue
 
-Data and tokenizer are already downloaded to `~/.cache/autoresearch/`. No extra setup needed.
-
-### Step 1 — Train and save a checkpoint
+If you see `FileNotFoundError: Missing token_bytes lookup`, run this once:
 
 ```bash
+uv run python - <<'EOF'
+import pickle, numpy as np, os
+
+TOKENIZER_DIR = os.path.expanduser("~/.cache/autoresearch/tokenizer")
+SPECIAL_TOKENS = [f"<|reserved_{i}|>" for i in range(4)]
+
+with open(os.path.join(TOKENIZER_DIR, "tokenizer.pkl"), "rb") as f:
+    enc = pickle.load(f)
+
+special_set = set(SPECIAL_TOKENS)
+token_bytes_list = []
+for token_id in range(enc.n_vocab):
+    token_str = enc.decode([token_id])
+    token_bytes_list.append(0 if token_str in special_set else len(token_str.encode("utf-8")))
+
+token_bytes = np.array(token_bytes_list, dtype=np.int32)
+out = os.path.join(TOKENIZER_DIR, "token_bytes.npy")
+np.save(out, token_bytes)
+print(f"Saved {len(token_bytes_list)} token byte lengths to {out}")
+EOF
+```
+
+### Step 2 — Train and save a checkpoint
+
+```bash
+# Terminal 1: run training (~6-7 min)
 uv run train.py > run.log 2>&1
+
+# Terminal 2: watch progress live
+tail -f run.log
 ```
 
-Expected duration: ~6–7 minutes total (1–2 min startup/compile + 5 min training + eval).
+When done, `checkpoints/<commit_hash>.safetensors` and `checkpoints/<commit_hash>_config.json` are saved automatically.
 
-When done, the output will include:
-```
-val_bpb:      x.xxxxxx
-Checkpoint saved: checkpoints/<commit_hash>.safetensors
-Config saved:     checkpoints/<commit_hash>_config.json
-```
-
-### Step 2 — Verify the checkpoint was saved
+### Step 3 — Verify the checkpoint
 
 ```bash
 uv run generate.py --list-checkpoints
 ```
 
-Expected output:
-```
-COMMIT       VAL_BPB      WEIGHTS  PATH
-------------------------------------------------------------
-d6a6680      x.xxxxxx     yes      checkpoints/d6a6680.safetensors
-```
-
-### Step 3 — Generate text
+### Step 4 — Generate and save samples
 
 ```bash
+# Uses best available checkpoint by default
 uv run generate.py --prompt "Once upon a time"
+
+# Use a specific checkpoint by commit hash
+uv run generate.py --checkpoint a732c8c --prompt "Once upon a time"
+uv run generate.py --checkpoint a732c8c --prompt "The history of machine learning began"
+uv run generate.py --checkpoint a732c8c --prompt "Scientists recently discovered"
 ```
 
-To compare two models side by side (for Prolific study prep), run the same prompt with the same seed against different checkpoints:
+Each run saves two files to `samples/`:
+- `commit-<hash>_bpb<score>_seed0_<prompt-slug>.txt` — the text shown to Prolific participants
+- `commit-<hash>_bpb<score>_seed0_<prompt-slug>.json` — full metadata
 
-```bash
-uv run generate.py --checkpoint <commit_A> --prompt "The world changed when" --seed 0
-uv run generate.py --checkpoint <commit_B> --prompt "The world changed when" --seed 0
-```
+Use `--no-save` to print to terminal only without saving.
 
 ---
 
 ## Next Steps for the Prolific Study
 
-- [ ] Re-run `train.py` on key commits (baseline `383abb4` and best `5efc7aa`) to save their checkpoints
-- [ ] Batch-generate comparison samples: same prompts, fixed seeds, two models
-- [ ] Design A/B preference task: show participants two unlabeled completions, ask which is more coherent/natural
-- [ ] Set up Prolific study (Qualtrics or custom interface)
-- [ ] Analyze whether participant preference correlates with val_bpb improvement
+### Phase 1 — Build a comparison set of checkpoints (~14 min of training)
+
+The two most useful checkpoints for human eval are the ones with the biggest quality gap:
+
+| Commit | val_bpb | Description |
+|--------|---------|-------------|
+| `383abb4` | 2.667 | baseline — worst model |
+| `5efc7aa` | 1.808 | best model — biggest improvement |
+
+Check out each commit, retrain to save its checkpoint, then return to the working branch:
+
+```bash
+git stash
+git checkout 383abb4
+uv run train.py > run.log 2>&1   # saves checkpoints/383abb4.safetensors
+
+git checkout 5efc7aa
+uv run train.py > run.log 2>&1   # saves checkpoints/5efc7aa.safetensors
+
+git checkout v-inference
+git stash pop
+```
+
+### Phase 2 — Generate matched comparison pairs
+
+Run the same prompts with the same seed against both checkpoints. The fixed seed means the only variable is model quality:
+
+```bash
+# For each prompt, generate from both models
+uv run generate.py --checkpoint 383abb4 --prompt "Once upon a time" --seed 0
+uv run generate.py --checkpoint 5efc7aa --prompt "Once upon a time" --seed 0
+
+uv run generate.py --checkpoint 383abb4 --prompt "The history of machine learning began" --seed 0
+uv run generate.py --checkpoint 5efc7aa --prompt "The history of machine learning began" --seed 0
+
+uv run generate.py --checkpoint 383abb4 --prompt "Scientists recently discovered" --seed 0
+uv run generate.py --checkpoint 5efc7aa --prompt "Scientists recently discovered" --seed 0
+```
+
+Aim for **at least 10 prompts** to give each Prolific participant enough variety.
+
+### Phase 3 — Design the Prolific study
+
+**Recommended task:** forced-choice A/B preference
+- Show one prompt + two unlabeled completions (Model A vs Model B, randomized order)
+- Ask: *"Which continuation reads more naturally?"*
+- One question per page, ~10 questions per participant
+- Target **50–100 participants** for statistical power
+
+**What to measure:** % of participants preferring the better model (lower val_bpb). A result significantly above 50% validates that val_bpb improvements are perceptible to humans.
+
+**Suggested sample size:** 10 prompts × 2 models × ~5 ratings each = ~100 judgments minimum. With 50 participants each doing 10 comparisons, you get 500 judgments total — enough for a clear signal.
+
+### Phase 4 — Analyze results
+
+After collecting responses, check:
+1. Does the better model (val_bpb 1.808) win significantly more than 50% of pairwise comparisons?
+2. Is the preference consistent across different prompt types?
+3. Is the effect size large enough to be practically meaningful?
