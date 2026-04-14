@@ -33,7 +33,7 @@ git checkout -b "$BRANCH"
 python3 -c "
 import subprocess, sys
 try:
-    r = subprocess.run(sys.argv[1:], timeout=$TOTAL_TIMEOUT)
+    r = subprocess.run(sys.argv[1:], timeout=$TOTAL_TIMEOUT, stdout=sys.stdout, stderr=sys.stderr)
     sys.exit(r.returncode)
 except subprocess.TimeoutExpired:
     print('Session timed out after ${TOTAL_TIMEOUT}s')
@@ -49,4 +49,8 @@ IMPORTANT ADDITIONS:
     python3 -c \"import subprocess,sys; r=subprocess.run(['uv','run','train.py'],timeout=${PER_EXPERIMENT_TIMEOUT},stdout=open('run.log','w'),stderr=subprocess.STDOUT); sys.exit(r.returncode)\"
   If it exits non-zero (timed out), treat it as a crash, log it, and move on.
 - After $N experiments are logged in results.tsv, output a brief summary and exit.
+- At the start of each experiment print a clear header like:
+    === Experiment <X>/$N: <what you are trying> ===
+- After each experiment print a one-line result like:
+    → val_bpb=<value> | status=<keep/discard/crash> | best so far=<value>
 "
