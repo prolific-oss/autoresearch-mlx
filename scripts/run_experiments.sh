@@ -12,7 +12,13 @@
 set -e
 
 N=${1:?Usage: bash scripts/run_experiments.sh <N>}
-BRANCH="autoresearch/$(date +%b%d | tr '[:upper:]' '[:lower:]')"
+BASE="autoresearch/$(date +%b%d | tr '[:upper:]' '[:lower:]')"
+BRANCH="$BASE"
+i=2
+while git show-ref --verify --quiet "refs/heads/$BRANCH"; do
+    BRANCH="${BASE}-${i}"
+    i=$((i + 1))
+done
 PER_EXPERIMENT_TIMEOUT=900   # 15 minutes in seconds (matches program.md)
 TOTAL_TIMEOUT=$((N * PER_EXPERIMENT_TIMEOUT))
 
