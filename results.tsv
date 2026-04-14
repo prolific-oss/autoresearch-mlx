@@ -2,3 +2,4 @@ commit	val_bpb	memory_gb	status	description
 84a8401	2.122623	21.2	keep	baseline - current config (depth=4, batch=2^16, matrix_lr=0.04)
 b770cfb	2.012896	21.4	discard	SwiGLU activation in MLP (replace squared ReLU) - worse
 6e7894b	2.224941	23.9	discard	increase depth 4→6 (model_dim 256→384) - fewer steps hurt more than capacity helped
+bb04035	1.876559	21.2	keep	device_batch 16→32 (grad_accum 2→1) - more optimizer steps per budget
