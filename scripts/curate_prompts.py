@@ -44,19 +44,21 @@ for source in ("elife", "plos"):
             })
 
 prompts = []
-for i, (discipline, candidates) in enumerate(buckets.items()):
+prompt_id = 0
+for discipline, candidates in buckets.items():
     print(f"  {discipline}: {len(candidates)} candidates")
     if len(candidates) < PER_DISCIPLINE:
         print(f"  SKIP {discipline}: only {len(candidates)} candidates, need {PER_DISCIPLINE}")
         continue
     for row in rng.sample(candidates, PER_DISCIPLINE):
         prompts.append({
-            "prompt_id":   f"{discipline}_{i:02d}",
+            "prompt_id":   f"{discipline}_{prompt_id:02d}",
             "prompt_text": row["prompt_text"],
             "discipline":  row["discipline"],
             "source":      row["source"],
             "title":       row["title"],
         })
+        prompt_id += 1
 
 with open(OUT, "w") as f:
     for p in prompts:
