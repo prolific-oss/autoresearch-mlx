@@ -2,11 +2,8 @@
 Curate 20 prompts from the tomasg25/scientific_lay_summarisation dataset.
 Saves to prompts.jsonl in the repo root.
 
-Requirements:
-    pip install datasets
-
 Usage:
-    python scripts/curate_prompts.py
+    uv run scripts/curate_prompts.py
 """
 
 import json
@@ -31,8 +28,9 @@ buckets = {d: [] for d in DISCIPLINES}
 
 for source in ("elife", "plos"):
     print(f"Loading {source}...")
-    for row in load_dataset("tomasg25/scientific_lay_summarisation", source, split="train"):
-        keywords = " ".join(row.get("keywords") or []).lower()
+    ds = load_dataset("tomasg25/scientific_lay_summarisation", source, trust_remote_code=True)
+    for row in ds["train"]:
+        keywords = (row.get("keywords") or "").lower()
         discipline = next((d for d, terms in DISCIPLINES.items() if any(t in keywords for t in terms)), None)
         if discipline is None:
             continue
@@ -48,6 +46,9 @@ for source in ("elife", "plos"):
 prompts = []
 for i, (discipline, candidates) in enumerate(buckets.items()):
     print(f"  {discipline}: {len(candidates)} candidates")
+    if len(candidates) < PER_DISCIPLINE:
+        print(f"  SKIP {discipline}: only {len(candidates)} candidates, need {PER_DISCIPLINE}")
+        continue
     for row in rng.sample(candidates, PER_DISCIPLINE):
         prompts.append({
             "prompt_id":   f"{discipline}_{i:02d}",

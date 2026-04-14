@@ -71,8 +71,7 @@ Pulls opening sentences from the [`tomasg25/scientific_lay_summarisation`](https
 Disciplines: biomedical, neuroscience, psychology/social, environmental, physics/tech.
 
 ```bash
-pip install datasets   # one-time, outside the uv venv
-python scripts/curate_prompts.py
+uv run scripts/curate_prompts.py
 ```
 
 Output format per line: `{prompt_id, prompt_text, discipline, source, title}`
@@ -103,8 +102,7 @@ Output format per line: `{prompt_id, prompt_text, discipline, checkpoint_a, val_
 
 ```bash
 # 1. Curate prompts (one-time)
-pip install datasets
-python scripts/curate_prompts.py        # → prompts.jsonl
+uv run scripts/curate_prompts.py        # → prompts.jsonl
 
 # 2. After autoresearch runs:
 uv run scripts/generate_dataset.py     # → dataset.jsonl
