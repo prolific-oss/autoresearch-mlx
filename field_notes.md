@@ -98,16 +98,30 @@ python scripts/select_pairs.py
 
 Output format per line: `{prompt_id, prompt_text, discipline, checkpoint_a, val_bpb_a, generated_text_a, checkpoint_b, val_bpb_b, generated_text_b, generation_params}`
 
+#### `scripts/run_experiments.sh` — automated experiment loop
+
+Runs N autoresearch experiments autonomously using Claude Code in headless mode. Creates a fresh branch, establishes a baseline, then iterates. Two timeout layers:
+
+- **Per-run**: each `uv run train.py` is wrapped with `timeout 900` (15 min) — hangs are killed and logged as crashes
+- **Total session**: hard cap of N × 15 min on the entire claude process
+
+```bash
+bash scripts/run_experiments.sh 10   # runs 10 experiments, ~70 min total
+```
+
 #### Full pipeline
 
 ```bash
 # 1. Curate prompts (one-time)
 uv run scripts/curate_prompts.py        # → prompts.jsonl
 
-# 2. After autoresearch runs:
+# 2. Run autoresearch experiments
+bash scripts/run_experiments.sh 10     # → checkpoints/, results.tsv
+
+# 3. Generate dataset
 uv run scripts/generate_dataset.py     # → dataset.jsonl
 
-# 3. Select pairs for Prolific:
+# 4. Select pairs for Prolific:
 python scripts/select_pairs.py         # → pairs.jsonl
 ```
 
@@ -227,7 +241,11 @@ Use `--no-save` to print to terminal only without saving.
 
 ### Phase 2 — Run autoresearch experiments from scratch
 
-Follow `program.md` on a fresh branch. Aim for **8-10 kept commits** spanning the val_bpb improvement curve. Each kept commit automatically saves a checkpoint to `checkpoints/`.
+```bash
+bash scripts/run_experiments.sh 10
+```
+
+Creates a fresh branch, runs 10 experiments autonomously via Claude Code headless mode, and stops. Each kept experiment saves a checkpoint to `checkpoints/`. Aim for 8-10 kept commits spanning the val_bpb curve.
 
 Do not reuse checkpoints or val_bpb numbers from other machines — all comparisons must be on the same hardware.
 
