@@ -60,6 +60,59 @@ Sampling options:
 - `--top-k` — restricts sampling to top-k tokens (default: 50)
 - `--seed` — fix for reproducibility (important: use same seed across models for fair comparison)
 
+### 3. Human Eval Pipeline (`scripts/`)
+
+Three scripts that turn autoresearch checkpoints into a Prolific-ready dataset. Run them in order after completing autoresearch experiments.
+
+#### `scripts/curate_prompts.py` → `prompts.jsonl`
+
+Pulls opening sentences from the [`tomasg25/scientific_lay_summarisation`](https://huggingface.co/datasets/tomasg25/scientific_lay_summarisation) dataset (eLife + PLOS subsets, CC-BY-4.0). Samples 4 prompts per discipline across 5 disciplines = 20 prompts total. Discipline is inferred from the dataset's `keywords` field.
+
+Disciplines: biomedical, neuroscience, psychology/social, environmental, physics/tech.
+
+```bash
+pip install datasets   # one-time, outside the uv venv
+python scripts/curate_prompts.py
+```
+
+Output format per line: `{prompt_id, prompt_text, discipline, source, title}`
+
+#### `scripts/generate_dataset.py` → `dataset.jsonl`
+
+Runs every checkpoint × every prompt and writes one JSONL record per pair. Loads model/sampling logic from `generate.py`. Resumes automatically if interrupted — already-written pairs are skipped.
+
+```bash
+uv run scripts/generate_dataset.py
+```
+
+Generation params (edit constants at top of file): `temperature=0.8, top_k=50, seed=0, max_tokens=200`
+
+Output format per line: `{checkpoint_id, val_bpb, prompt_id, prompt_text, discipline, generated_text, generation_params}`
+
+#### `scripts/select_pairs.py` → `pairs.jsonl`
+
+Pairs checkpoints that are `STEP_GAP` steps apart in val_bpb ranking (default: 3). Tune `STEP_GAP` after seeing the actual spread from your runs.
+
+```bash
+python scripts/select_pairs.py
+```
+
+Output format per line: `{prompt_id, prompt_text, discipline, checkpoint_a, val_bpb_a, generated_text_a, checkpoint_b, val_bpb_b, generated_text_b, generation_params}`
+
+#### Full pipeline
+
+```bash
+# 1. Curate prompts (one-time)
+pip install datasets
+python scripts/curate_prompts.py        # → prompts.jsonl
+
+# 2. After autoresearch runs:
+uv run scripts/generate_dataset.py     # → dataset.jsonl
+
+# 3. Select pairs for Prolific:
+python scripts/select_pairs.py         # → pairs.jsonl
+```
+
 ---
 
 ## Known Issues & Fixes
@@ -170,48 +223,26 @@ Use `--no-save` to print to terminal only without saving.
 
 ## Next Steps for the Prolific Study
 
-### Phase 1 — Build a comparison set of checkpoints (~14 min of training)
+### Phase 1 — Curate prompts (done)
 
-The two most useful checkpoints for human eval are the ones with the biggest quality gap:
+`scripts/curate_prompts.py` handles this. Run it once to produce `prompts.jsonl`.
 
-| Commit | val_bpb | Description |
-|--------|---------|-------------|
-| `383abb4` | 2.667 | baseline — worst model |
-| `5efc7aa` | 1.808 | best model — biggest improvement |
+### Phase 2 — Run autoresearch experiments from scratch
 
-Check out each commit, retrain to save its checkpoint, then return to the working branch:
+Follow `program.md` on a fresh branch. Aim for **8-10 kept commits** spanning the val_bpb improvement curve. Each kept commit automatically saves a checkpoint to `checkpoints/`.
 
-```bash
-git stash
-git checkout 383abb4
-uv run train.py > run.log 2>&1   # saves checkpoints/383abb4.safetensors
+Do not reuse checkpoints or val_bpb numbers from other machines — all comparisons must be on the same hardware.
 
-git checkout 5efc7aa
-uv run train.py > run.log 2>&1   # saves checkpoints/5efc7aa.safetensors
-
-git checkout v-inference
-git stash pop
-```
-
-### Phase 2 — Generate matched comparison pairs
-
-Run the same prompts with the same seed against both checkpoints. The fixed seed means the only variable is model quality:
+### Phase 3 — Generate the dataset and select pairs
 
 ```bash
-# For each prompt, generate from both models
-uv run generate.py --checkpoint 383abb4 --prompt "Once upon a time" --seed 0
-uv run generate.py --checkpoint 5efc7aa --prompt "Once upon a time" --seed 0
-
-uv run generate.py --checkpoint 383abb4 --prompt "The history of machine learning began" --seed 0
-uv run generate.py --checkpoint 5efc7aa --prompt "The history of machine learning began" --seed 0
-
-uv run generate.py --checkpoint 383abb4 --prompt "Scientists recently discovered" --seed 0
-uv run generate.py --checkpoint 5efc7aa --prompt "Scientists recently discovered" --seed 0
+uv run scripts/generate_dataset.py   # → dataset.jsonl
+python scripts/select_pairs.py       # → pairs.jsonl
 ```
 
-Aim for **at least 10 prompts** to give each Prolific participant enough variety.
+Tune `STEP_GAP` in `select_pairs.py` after seeing the actual val_bpb spread.
 
-### Phase 3 — Design the Prolific study
+### Phase 4 — Design the Prolific study
 
 **Recommended task:** forced-choice A/B preference
 - Show one prompt + two unlabeled completions (Model A vs Model B, randomized order)
