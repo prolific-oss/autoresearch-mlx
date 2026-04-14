@@ -1,1 +1,2 @@
 commit	val_bpb	memory_gb	status	description
+84a8401	2.122623	21.2	keep	baseline - current config (depth=4, batch=2^16, matrix_lr=0.04)
