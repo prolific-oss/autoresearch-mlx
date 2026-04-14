@@ -24,14 +24,23 @@ echo ""
 
 git checkout -b "$BRANCH"
 
-timeout "$TOTAL_TIMEOUT" claude --dangerously-skip-permissions -p "
+python3 -c "
+import subprocess, sys
+try:
+    r = subprocess.run(sys.argv[1:], timeout=$TOTAL_TIMEOUT)
+    sys.exit(r.returncode)
+except subprocess.TimeoutExpired:
+    print('Session timed out after ${TOTAL_TIMEOUT}s')
+    sys.exit(124)
+" claude --dangerously-skip-permissions -p "
 $(cat program.md)
 
 ---
 IMPORTANT ADDITIONS:
 - Run exactly $N experiments total (including the baseline), then stop.
 - Do not run more than $N. Do not ask for confirmation.
-- Each individual training run must use: timeout ${PER_EXPERIMENT_TIMEOUT} uv run train.py > run.log 2>&1
+- Each individual training run must use:
+    python3 -c \"import subprocess,sys; r=subprocess.run(['uv','run','train.py'],timeout=${PER_EXPERIMENT_TIMEOUT},stdout=open('run.log','w'),stderr=subprocess.STDOUT); sys.exit(r.returncode)\"
   If it exits non-zero (timed out), treat it as a crash, log it, and move on.
 - After $N experiments are logged in results.tsv, output a brief summary and exit.
 "
