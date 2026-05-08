@@ -27,9 +27,12 @@ PROMPTS_FILE    = "prompts.jsonl"
 CHECKPOINTS_DIR = "checkpoints"
 OUT             = "dataset.jsonl"
 TEMPERATURE     = 0.8
-TOP_K           = 50
+TOP_K           = 0       # disabled in favor of nucleus sampling
+TOP_P           = 0.9     # nucleus sampling
+FREQ_PENALTY    = 0.5     # additive frequency penalty (per-token-occurrence) to avoid loops
 SEED            = 0
 MAX_TOKENS      = 200
+STRIP_TRAILING_SPACE_PERIOD = True  # eLife/PLOS prompts end in " ." which traps long-trained models in dot-loops
 
 # ---------------------------------------------------------------------------
 # Load prompts
@@ -96,17 +99,30 @@ with open(OUT, "a") as out_f:
             print(f"  [{n}/{total}] {ckpt['commit']} × {prompt['prompt_id']}", end=" ... ", flush=True)
 
             mx.random.seed(SEED)
+            text = prompt["prompt_text"]
+            if STRIP_TRAILING_SPACE_PERIOD:
+                text = text.rstrip(" .\t\n")
             bos = tokenizer.get_bos_token_id()
-            ids = mx.array([tokenizer.encode(prompt["prompt_text"], prepend=bos)], dtype=mx.int32)
+            prompt_ids = tokenizer.encode(text, prepend=bos)
+            ids = mx.array([prompt_ids], dtype=mx.int32)
             output_tokens = []
+            context = list(prompt_ids)
             for _ in range(MAX_TOKENS):
                 if ids.shape[1] >= config["sequence_len"]:
                     break
                 logits = model(ids)
                 mx.eval(logits)
-                next_id = sample_token(logits[0, -1], TEMPERATURE, TOP_K)
+                next_id = sample_token(
+                    logits[0, -1],
+                    TEMPERATURE,
+                    TOP_K,
+                    top_p=TOP_P,
+                    freq_penalty=FREQ_PENALTY,
+                    prev_ids=context,
+                )
                 ids = mx.concatenate([ids, mx.array([[next_id]], dtype=mx.int32)], axis=1)
                 output_tokens.append(next_id)
+                context.append(next_id)
             generated_text = tokenizer.decode(output_tokens)
 
             record = {
@@ -117,10 +133,12 @@ with open(OUT, "a") as out_f:
                 "discipline":      prompt.get("discipline"),
                 "generated_text":  generated_text,
                 "generation_params": {
-                    "temperature": TEMPERATURE,
-                    "top_k":       TOP_K,
-                    "seed":        SEED,
-                    "max_tokens":  MAX_TOKENS,
+                    "temperature":  TEMPERATURE,
+                    "top_k":        TOP_K,
+                    "top_p":        TOP_P,
+                    "freq_penalty": FREQ_PENALTY,
+                    "seed":         SEED,
+                    "max_tokens":   MAX_TOKENS,
                 },
             }
             out_f.write(json.dumps(record) + "\n")

@@ -13,4 +13,6 @@ dependencies = [
     "rustbpe>=0.1.0",
     "tiktoken>=0.11.0",
     "datasets>=2.14.0,<3.0.0",
+    "mlx-lm>=0.31.2",
+    "matplotlib>=3.10.9",
 ]

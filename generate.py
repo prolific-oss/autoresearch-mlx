@@ -175,19 +175,42 @@ class GPT(nn.Module):
 # Sampling
 # ---------------------------------------------------------------------------
 
-def sample_token(logits, temperature, top_k):
-    """Sample next token from logits (1D array of shape [vocab_size])."""
+def sample_token(logits, temperature, top_k, top_p=1.0, freq_penalty=0.0, prev_ids=None):
+    """
+    Sample next token from logits (1D array of shape [vocab_size]).
+
+    Defaults are backward compatible: top_p=1.0 and freq_penalty=0.0 are no-ops.
+    Set top_k=0 + top_p<1.0 to use nucleus sampling alone.
+    freq_penalty subtracts (penalty * count_in_context) from each token's logit.
+    """
     if temperature == 0.0:
         return int(mx.argmax(logits).item())
+
+    if freq_penalty != 0.0 and prev_ids:
+        import numpy as np
+        counts_np = np.bincount(np.asarray(prev_ids, dtype=np.int64), minlength=int(logits.shape[0])).astype(np.float32)
+        logits = logits - freq_penalty * mx.array(counts_np)
 
     logits = logits / temperature
 
     if top_k > 0:
         k = min(top_k, logits.shape[0])
-        # find the kth-largest value and mask everything below it
         sorted_logits = mx.sort(logits)
         threshold = sorted_logits[-k]
         logits = mx.where(logits < threshold, mx.full(logits.shape, float("-inf")), logits)
+
+    if top_p < 1.0:
+        import numpy as np
+        logits_np = np.array(logits)
+        sorted_idx = np.argsort(-logits_np)
+        sorted_logits = logits_np[sorted_idx]
+        sorted_probs = np.exp(sorted_logits - sorted_logits.max())
+        sorted_probs /= sorted_probs.sum()
+        cum = np.cumsum(sorted_probs)
+        cutoff = int(np.searchsorted(cum, top_p)) + 1
+        mask = np.full_like(logits_np, False, dtype=bool)
+        mask[sorted_idx[:cutoff]] = True
+        logits = mx.array(np.where(mask, logits_np, -np.inf))
 
     return int(mx.random.categorical(logits.reshape(1, -1)).item())
 

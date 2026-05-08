@@ -354,6 +354,140 @@ class AdamW:
 
 
 # ---------------------------------------------------------------------------
+# Snapshot save / resume helpers
+# ---------------------------------------------------------------------------
+
+SNAPSHOT_INTERVAL_SECONDS = int(os.environ.get("AR_SNAPSHOT_INTERVAL", 300))
+
+
+def _set_path_value(obj, path, value):
+    parts = path.split(".")
+    cur = obj
+    for part in parts[:-1]:
+        if isinstance(cur, list):
+            cur = cur[int(part)]
+        elif isinstance(cur, dict):
+            cur = cur[part]
+        else:
+            cur = getattr(cur, part)
+    last = parts[-1]
+    if isinstance(cur, list):
+        cur[int(last)] = value
+    elif isinstance(cur, dict):
+        cur[last] = value
+    else:
+        setattr(cur, last, value)
+
+
+def save_training_snapshot(basename, model, optimizer, step, total_training_time, smooth_train_loss):
+    if not basename:
+        return
+    payload = dict(tree_flatten(model.parameters()))
+    opt_steps = {}
+    for path, st in optimizer.adam_state.items():
+        payload[f"OPT.M.{path}"] = st["m"]
+        payload[f"OPT.V.{path}"] = st["v"]
+        opt_steps[path] = st["t"]
+    snap_w = f"checkpoints/{basename}.snapshot.safetensors"
+    snap_s = f"checkpoints/{basename}.snapshot.json"
+    mx.save_safetensors(snap_w, payload)
+    with open(snap_s + ".tmp", "w") as f:
+        json.dump({
+            "step": step,
+            "total_training_time": total_training_time,
+            "smooth_train_loss": smooth_train_loss,
+            "opt_steps": opt_steps,
+        }, f)
+    os.replace(snap_s + ".tmp", snap_s)
+    print(f"\n[snapshot] step={step} t={total_training_time:.0f}s loss={smooth_train_loss:.4f}")
+
+
+def load_training_snapshot(basename, model, optimizer):
+    if not basename:
+        return None
+    snap_w = f"checkpoints/{basename}.snapshot.safetensors"
+    snap_s = f"checkpoints/{basename}.snapshot.json"
+    if not (os.path.isfile(snap_w) and os.path.isfile(snap_s)):
+        return None
+    print(f"Resuming from snapshot: {snap_w}")
+    payload = dict(mx.load(snap_w))
+    for k, v in payload.items():
+        if k.startswith("OPT.M.") or k.startswith("OPT.V."):
+            continue
+        _set_path_value(model, k, v)
+    with open(snap_s) as f:
+        st = json.load(f)
+    optimizer.adam_state = {}
+    for path in optimizer.param_config:
+        m_key = f"OPT.M.{path}"
+        v_key = f"OPT.V.{path}"
+        if m_key in payload and v_key in payload:
+            optimizer.adam_state[path] = {
+                "m": payload[m_key],
+                "v": payload[v_key],
+                "t": st["opt_steps"].get(path, 0),
+            }
+    return st["step"], st["total_training_time"], st["smooth_train_loss"]
+
+
+def cleanup_training_snapshot(basename):
+    if not basename:
+        return
+    for ext in (".snapshot.safetensors", ".snapshot.json"):
+        path = f"checkpoints/{basename}{ext}"
+        if os.path.isfile(path):
+            os.remove(path)
+
+
+def load_init_weights(init_from, model):
+    """Load model weights from a saved final checkpoint as initialization.
+
+    Used when AR_INIT_FROM is set — typically to continue training a model whose
+    optimizer-state snapshot was lost. The optimizer starts cold (m=v=0); first
+    1-2 minutes of training will be 'AdamW warming up' before useful descent
+    resumes. Beats throwing away the model's prior training.
+    """
+    if not init_from:
+        return False
+    weights_path = f"checkpoints/{init_from}.safetensors"
+    if not os.path.isfile(weights_path):
+        print(f"WARN: AR_INIT_FROM={init_from} but {weights_path} not found, skipping")
+        return False
+    print(f"Loading init weights from {weights_path} (optimizer starts cold)")
+    weights = dict(mx.load(weights_path))
+    for path, value in weights.items():
+        if path.startswith("OPT.M.") or path.startswith("OPT.V."):
+            continue  # ignore optimizer state if it leaked into the file
+        _set_path_value(model, path, value)
+    return True
+
+
+def save_trajectory_checkpoint(basename, step, total_training_time, model, config_obj, val_bpb_value):
+    """Save a permanent named checkpoint at a snapshot point (for trajectory analysis)."""
+    if not basename:
+        return
+    name = f"{basename}-step{step:06d}"
+    weights_path = f"checkpoints/{name}.safetensors"
+    config_path = f"checkpoints/{name}_config.json"
+    mx.save_safetensors(weights_path, dict(tree_flatten(model.parameters())))
+    with open(config_path, "w") as f:
+        json.dump({
+            "sequence_len": config_obj.sequence_len,
+            "vocab_size": config_obj.vocab_size,
+            "n_layer": config_obj.n_layer,
+            "n_head": config_obj.n_head,
+            "n_kv_head": config_obj.n_kv_head,
+            "n_embd": config_obj.n_embd,
+            "window_pattern": config_obj.window_pattern,
+            "val_bpb": val_bpb_value,
+            "tag": basename,
+            "trajectory_step": step,
+            "trajectory_time": total_training_time,
+        }, f, indent=2)
+    print(f"\n[trajectory] saved {name} val_bpb={val_bpb_value:.4f}")
+
+
+# ---------------------------------------------------------------------------
 # Hyperparameters (edit these directly, no CLI flags needed)
 # ---------------------------------------------------------------------------
 
@@ -363,7 +497,7 @@ HEAD_DIM = 128
 WINDOW_PATTERN = "SSSL"
 
 # v0.1: AdamW only. Muon port is future work.
-TOTAL_BATCH_SIZE = 2**13
+TOTAL_BATCH_SIZE = int(os.environ.get("AR_TOTAL_BATCH", 2**13))
 EMBEDDING_LR = 0.6
 UNEMBEDDING_LR = 0.004
 MATRIX_LR = 0.04
@@ -371,14 +505,15 @@ SCALAR_LR = 0.5
 WEIGHT_DECAY = 0.2
 ADAM_BETAS = (0.8, 0.95)
 WARMUP_RATIO = 0.0
-WARMDOWN_RATIO = 0.3
+WARMDOWN_RATIO = float(os.environ.get("AR_WARMDOWN", 0.3))
 FINAL_LR_FRAC = 0.0
 
 # Model size
-DEPTH = 4
-DEVICE_BATCH_SIZE = 4
+DEPTH = int(os.environ.get("AR_DEPTH", 4))
+DEVICE_BATCH_SIZE = int(os.environ.get("AR_DEVICE_BATCH", 4))
 FINAL_EVAL_BATCH_SIZE = 256
 STARTUP_EXCLUDE_STEPS = 1
+TRAJECTORY_MODE = os.environ.get("AR_TRAJECTORY", "0") == "1"
 
 
 def get_lr_multiplier(progress):
@@ -435,9 +570,34 @@ loss_grad_fn = nn.value_and_grad(model, lambda model, inputs, targets: model(inp
 print(f"Time budget: {TIME_BUDGET}s")
 print(f"Gradient accumulation steps: {grad_accum_steps}")
 
-smooth_train_loss = 0.0
-total_training_time = 0.0
-step = 0
+# Resolve the checkpoint name early so snapshot save/load can use it during training.
+os.makedirs("checkpoints", exist_ok=True)
+try:
+    commit_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], text=True).strip()
+except subprocess.CalledProcessError:
+    commit_hash = "unknown"
+tag = os.environ.get("AR_TAG", "")
+basename = tag if tag else commit_hash
+
+# Optionally load init weights from a prior final checkpoint (AR_INIT_FROM).
+# Snapshot resume below takes precedence — INIT_FROM only fires if there's
+# no resume snapshot to pick up.
+INIT_FROM = os.environ.get("AR_INIT_FROM", "")
+if INIT_FROM:
+    load_init_weights(INIT_FROM, model)
+    mx.eval(model.parameters())
+
+# Try to resume from a periodic snapshot if one exists for this tag.
+resumed = load_training_snapshot(basename, model, optimizer)
+if resumed is not None:
+    step, total_training_time, smooth_train_loss = resumed
+    last_snapshot_time = total_training_time
+    print(f"Resumed: step={step} total_training_time={total_training_time:.0f}s smooth_loss={smooth_train_loss:.4f}")
+else:
+    smooth_train_loss = 0.0
+    total_training_time = 0.0
+    step = 0
+    last_snapshot_time = 0.0
 t_compiled = None
 
 while True:
@@ -498,6 +658,13 @@ while True:
     elif (step + 1) % 5000 == 0:
         gc.collect()
 
+    if total_training_time - last_snapshot_time >= SNAPSHOT_INTERVAL_SECONDS:
+        save_training_snapshot(basename, model, optimizer, step, total_training_time, smooth_train_loss)
+        if TRAJECTORY_MODE:
+            traj_val_bpb = evaluate_bpb(model, tokenizer, FINAL_EVAL_BATCH_SIZE)
+            save_trajectory_checkpoint(basename, step, total_training_time, model, config, traj_val_bpb)
+        last_snapshot_time = total_training_time
+
     step += 1
     if step >= STARTUP_EXCLUDE_STEPS and total_training_time >= TIME_BUDGET:
         break
@@ -528,16 +695,11 @@ print(f"num_params_M:     {num_params / 1e6:.1f}")
 print(f"depth:            {DEPTH}")
 
 # ---------------------------------------------------------------------------
-# Checkpoint saving
+# Final checkpoint save
+# (basename, commit_hash, tag were resolved earlier so snapshots could write)
 # ---------------------------------------------------------------------------
-os.makedirs("checkpoints", exist_ok=True)
-try:
-    commit_hash = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], text=True).strip()
-except subprocess.CalledProcessError:
-    commit_hash = "unknown"
-
-weights_path = f"checkpoints/{commit_hash}.safetensors"
-config_path = f"checkpoints/{commit_hash}_config.json"
+weights_path = f"checkpoints/{basename}.safetensors"
+config_path = f"checkpoints/{basename}_config.json"
 
 mx.save_safetensors(weights_path, dict(tree_flatten(model.parameters())))
 
@@ -552,7 +714,16 @@ with open(config_path, "w") as f:
         "window_pattern": config.window_pattern,
         "val_bpb": val_bpb,
         "commit": commit_hash,
+        "tag": tag,
+        "time_budget": TIME_BUDGET,
+        "total_batch_size": TOTAL_BATCH_SIZE,
+        "device_batch_size": DEVICE_BATCH_SIZE,
+        "warmdown_ratio": WARMDOWN_RATIO,
     }, f, indent=2)
 
 print(f"Checkpoint saved: {weights_path}")
 print(f"Config saved:     {config_path}")
+# NB: deliberately NOT deleting the snapshot. The snapshot (model + optimizer
+# + RNG + step state) is what lets you resume / extend this run later by
+# re-invoking with the same AR_TAG and a larger AR_TIME_BUDGET. Disk cost is
+# ~2x model size; user can delete manually if they want it back.

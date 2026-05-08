@@ -16,7 +16,7 @@ from itertools import combinations
 
 DATASET_FILE = "dataset.jsonl"
 OUT          = "pairs.jsonl"
-STEP_GAP     = 3   # pair checkpoints this many steps apart in val_bpb ranking
+STEP_GAP     = 1   # pair checkpoints this many steps apart in val_bpb ranking
 
 # ---------------------------------------------------------------------------
 # Load dataset

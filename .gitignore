@@ -7,3 +7,25 @@ run.log
 surfaces.txt
 surface-verify-prompt.md
 build-2-closeout.md
+
+# Model weights and training artifacts (zipped + shared separately)
+*.safetensors
+*.pt
+*.snapshot.json
+checkpoints/
+prod_logs/
+eval_data/
+report/
+
+# Pipeline outputs (regenerated)
+annotations_*.json
+auto_metrics.json
+auto_metrics.tsv
+pairs*.jsonl
+
+# GPU-side autoresearch tooling (separate workflow, not for handoff)
+autoresearch-pytorch/
+
+# Workspace junk
+.claude/
+_old_*/
