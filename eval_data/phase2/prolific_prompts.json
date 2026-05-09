@@ -1,0 +1,75 @@
+{
+  "_meta": {
+    "purpose": "50 general-audience-judgeable prompts for the Prolific eval. Each prompt is something any literate adult can evaluate based on common knowledge, writing quality, helpfulness, or emotional appropriateness — without specialized credentials.",
+    "categories": [
+      "creative_writing",
+      "personal_advice",
+      "pedagogical_clarity",
+      "sensory_descriptive",
+      "persuasive_opinion",
+      "emotional_tone",
+      "light_planning",
+      "common_factual"
+    ],
+    "filtered_out": "framework comparisons, programming-language-specific, medical/legal/financial advice, specialized domain content, niche cultural references"
+  },
+  "prompts": [
+    {"id": "cw01", "category": "creative_writing", "text": "Write the opening line of a noir detective novel."},
+    {"id": "cw02", "category": "creative_writing", "text": "Write a short poem about a winter morning."},
+    {"id": "cw03", "category": "creative_writing", "text": "Compose a haiku about autumn."},
+    {"id": "cw04", "category": "creative_writing", "text": "Write an opening for a fantasy story set in an underwater city."},
+    {"id": "cw05", "category": "creative_writing", "text": "Write a thank-you message to a teacher who changed your life."},
+    {"id": "cw06", "category": "creative_writing", "text": "Describe what a Sunday morning feels like in 5 sentences."},
+    {"id": "cw07", "category": "creative_writing", "text": "Write a short scene where two strangers connect at a bus stop."},
+    {"id": "cw08", "category": "creative_writing", "text": "Write the first paragraph of a memoir about growing up in a small town."},
+
+    {"id": "pa01", "category": "personal_advice", "text": "I'm feeling overwhelmed at work. Any advice?"},
+    {"id": "pa02", "category": "personal_advice", "text": "I think my friend is upset with me but won't say why. What should I do?"},
+    {"id": "pa03", "category": "personal_advice", "text": "I've been struggling to sleep lately. What might help?"},
+    {"id": "pa04", "category": "personal_advice", "text": "How do I have a difficult conversation with my partner about something that's been bothering me?"},
+    {"id": "pa05", "category": "personal_advice", "text": "I'm nervous about a job interview tomorrow. Any tips to calm down?"},
+    {"id": "pa06", "category": "personal_advice", "text": "My neighbor plays loud music late at night. How should I approach it?"},
+    {"id": "pa07", "category": "personal_advice", "text": "I keep procrastinating on important tasks. What can I do?"},
+    {"id": "pa08", "category": "personal_advice", "text": "How do I stay motivated when working on a long project that doesn't have an end in sight?"},
+
+    {"id": "pc01", "category": "pedagogical_clarity", "text": "Explain photosynthesis to a 10-year-old."},
+    {"id": "pc02", "category": "pedagogical_clarity", "text": "Explain how vaccines work in simple terms."},
+    {"id": "pc03", "category": "pedagogical_clarity", "text": "Why do leaves change color in autumn? Keep it short."},
+    {"id": "pc04", "category": "pedagogical_clarity", "text": "Explain why ice floats on water in a way a kid would understand."},
+    {"id": "pc05", "category": "pedagogical_clarity", "text": "What is gravity, in simple terms?"},
+    {"id": "pc06", "category": "pedagogical_clarity", "text": "Explain the water cycle in 4 sentences."},
+    {"id": "pc07", "category": "pedagogical_clarity", "text": "Why do we yawn when we see other people yawn?"},
+    {"id": "pc08", "category": "pedagogical_clarity", "text": "How does the moon affect the tides? Give an intuitive explanation."},
+
+    {"id": "sd01", "category": "sensory_descriptive", "text": "Describe the smell of rain in 3 sentences."},
+    {"id": "sd02", "category": "sensory_descriptive", "text": "Describe the sound of a forest at dawn."},
+    {"id": "sd03", "category": "sensory_descriptive", "text": "Describe the taste of fresh-baked bread."},
+    {"id": "sd04", "category": "sensory_descriptive", "text": "Describe the feeling of walking on warm sand."},
+    {"id": "sd05", "category": "sensory_descriptive", "text": "Describe what a thunderstorm sounds like to someone who's never heard one."},
+
+    {"id": "po01", "category": "persuasive_opinion", "text": "Convince me, in one paragraph, to learn a new language."},
+    {"id": "po02", "category": "persuasive_opinion", "text": "Argue against the idea that 'money can't buy happiness.'"},
+    {"id": "po03", "category": "persuasive_opinion", "text": "Make a case for reading paper books over e-books."},
+    {"id": "po04", "category": "persuasive_opinion", "text": "Convince someone to start journaling daily."},
+    {"id": "po05", "category": "persuasive_opinion", "text": "Argue that walking is an underrated form of exercise."},
+    {"id": "po06", "category": "persuasive_opinion", "text": "Persuade me to try cooking at home more often."},
+    {"id": "po07", "category": "persuasive_opinion", "text": "Make a brief case for taking more breaks during work."},
+
+    {"id": "et01", "category": "emotional_tone", "text": "Write a short, kind reply to a friend who just lost their job."},
+    {"id": "et02", "category": "emotional_tone", "text": "Write a sympathetic message to someone going through a breakup."},
+    {"id": "et03", "category": "emotional_tone", "text": "Write an encouraging note to a friend starting a new job."},
+    {"id": "et04", "category": "emotional_tone", "text": "Write a thoughtful birthday message for a parent."},
+    {"id": "et05", "category": "emotional_tone", "text": "Write a brief condolence message to a colleague who lost a pet."},
+
+    {"id": "lp01", "category": "light_planning", "text": "Plan one week of dinners for someone trying to eat more vegetables."},
+    {"id": "lp02", "category": "light_planning", "text": "Plan a perfect weekend day for someone who loves being outdoors."},
+    {"id": "lp03", "category": "light_planning", "text": "Plan a simple morning routine to start the day well."},
+    {"id": "lp04", "category": "light_planning", "text": "Plan a 3-day visit to your favorite city for a friend who's never been."},
+
+    {"id": "cf01", "category": "common_factual", "text": "Why do humans need sleep?"},
+    {"id": "cf02", "category": "common_factual", "text": "What's the difference between weather and climate?"},
+    {"id": "cf03", "category": "common_factual", "text": "Why is laughter contagious?"},
+    {"id": "cf04", "category": "common_factual", "text": "What makes a good friendship last?"},
+    {"id": "cf05", "category": "common_factual", "text": "What's something you wish people understood better about loneliness?"}
+  ]
+}

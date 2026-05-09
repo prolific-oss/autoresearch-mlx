@@ -14,7 +14,14 @@ build-2-closeout.md
 *.snapshot.json
 checkpoints/
 prod_logs/
-eval_data/
+
+# Pipeline output dirs — gitignored by default but eval_data/phase2/ is the
+# Phase 2 handoff payload (tracked) and report/ has earlier diagnostic UIs.
+eval_data/*
+!eval_data/phase2/
+eval_data/phase2/_PREVIEW*
+eval_data/phase2/pairs_for_claude.txt
+eval_data/phase2/prolific_generations_PREVIEW.json
 report/
 
 # Pipeline outputs (regenerated)

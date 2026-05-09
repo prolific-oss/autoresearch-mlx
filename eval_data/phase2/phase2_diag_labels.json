@@ -1,0 +1,482 @@
+[
+  {
+    "id": "p02_c2",
+    "prompt": "I think my friend is upset with me but won't say why. What should I do?",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-adambeta2",
+    "b_model": "prod-bestbet",
+    "label": "B"
+  },
+  {
+    "id": "p09_c0",
+    "prompt": "Describe the smell of rain in 3 sentences.",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-baseline",
+    "label": "A"
+  },
+  {
+    "id": "p02_c0",
+    "prompt": "I think my friend is upset with me but won't say why. What should I do?",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-baseline",
+    "label": "B"
+  },
+  {
+    "id": "p08_c0",
+    "prompt": "What's wrong with this Python code? `def avg(lst): return sum(lst) / len(lst)`",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "p10_c0",
+    "prompt": "Argue against the idea that 'money can't buy happiness.'",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-baseline",
+    "label": "A"
+  },
+  {
+    "id": "p10_c3",
+    "prompt": "Argue against the idea that 'money can't buy happiness.'",
+    "axis": "low-end differentiation",
+    "a_model": "prod-baseline",
+    "b_model": "prod-neftune",
+    "label": "tie"
+  },
+  {
+    "id": "p06_c0",
+    "prompt": "What's a common cause of teams missing deadlines that managers tend to overlook?",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet-v2",
+    "label": "B"
+  },
+  {
+    "id": "p03_c1",
+    "prompt": "Compare React and Vue from a maintainability standpoint.",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-bestbet",
+    "label": "B"
+  },
+  {
+    "id": "p00_c0",
+    "prompt": "Write the opening line of a noir detective novel.",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-baseline",
+    "label": "B"
+  },
+  {
+    "id": "p03_c4",
+    "prompt": "Compare React and Vue from a maintainability standpoint.",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "A"
+  },
+  {
+    "id": "p04_c4",
+    "prompt": "Plan one week of dinners for someone trying to eat more vegetables.",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "base",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "p02_c1",
+    "prompt": "I think my friend is upset with me but won't say why. What should I do?",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-bestbet",
+    "label": "B"
+  },
+  {
+    "id": "p01_c3",
+    "prompt": "Explain quantum entanglement using a household analogy a kid would understand.",
+    "axis": "low-end differentiation",
+    "a_model": "prod-baseline",
+    "b_model": "prod-neftune",
+    "label": "B"
+  },
+  {
+    "id": "p05_c4",
+    "prompt": "Why does the Pythagorean theorem actually work? Give intuition, not just a proof.",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "B"
+  },
+  {
+    "id": "p11_c4",
+    "prompt": "Convince me, in one paragraph, to learn a new language.",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "B"
+  },
+  {
+    "id": "p10_c1",
+    "prompt": "Argue against the idea that 'money can't buy happiness.'",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "p04_c1",
+    "prompt": "Plan one week of dinners for someone trying to eat more vegetables.",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-bestbet",
+    "label": "A"
+  },
+  {
+    "id": "p07_c4",
+    "prompt": "Write a short, kind reply to a friend who just lost their job.",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "A"
+  },
+  {
+    "id": "p04_c2",
+    "prompt": "Plan one week of dinners for someone trying to eat more vegetables.",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-adambeta2",
+    "label": "A"
+  },
+  {
+    "id": "p09_c2",
+    "prompt": "Describe the smell of rain in 3 sentences.",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-adambeta2",
+    "label": "B"
+  },
+  {
+    "id": "p03_c3",
+    "prompt": "Compare React and Vue from a maintainability standpoint.",
+    "axis": "low-end differentiation",
+    "a_model": "prod-neftune",
+    "b_model": "prod-baseline",
+    "label": "B"
+  },
+  {
+    "id": "p06_c1",
+    "prompt": "What's a common cause of teams missing deadlines that managers tend to overlook?",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-bestbet",
+    "label": "A"
+  },
+  {
+    "id": "p05_c3",
+    "prompt": "Why does the Pythagorean theorem actually work? Give intuition, not just a proof.",
+    "axis": "low-end differentiation",
+    "a_model": "prod-neftune",
+    "b_model": "prod-baseline",
+    "label": "B"
+  },
+  {
+    "id": "p08_c2",
+    "prompt": "What's wrong with this Python code? `def avg(lst): return sum(lst) / len(lst)`",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-adambeta2",
+    "label": "A"
+  },
+  {
+    "id": "p09_c1",
+    "prompt": "Describe the smell of rain in 3 sentences.",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "p11_c3",
+    "prompt": "Convince me, in one paragraph, to learn a new language.",
+    "axis": "low-end differentiation",
+    "a_model": "prod-neftune",
+    "b_model": "prod-baseline",
+    "label": "A"
+  },
+  {
+    "id": "p11_c1",
+    "prompt": "Convince me, in one paragraph, to learn a new language.",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "p09_c4",
+    "prompt": "Describe the smell of rain in 3 sentences.",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "A"
+  },
+  {
+    "id": "p03_c2",
+    "prompt": "Compare React and Vue from a maintainability standpoint.",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-adambeta2",
+    "label": "A"
+  },
+  {
+    "id": "p00_c1",
+    "prompt": "Write the opening line of a noir detective novel.",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-bestbet",
+    "label": "A"
+  },
+  {
+    "id": "p07_c3",
+    "prompt": "Write a short, kind reply to a friend who just lost their job.",
+    "axis": "low-end differentiation",
+    "a_model": "prod-neftune",
+    "b_model": "prod-baseline",
+    "label": "A"
+  },
+  {
+    "id": "p06_c3",
+    "prompt": "What's a common cause of teams missing deadlines that managers tend to overlook?",
+    "axis": "low-end differentiation",
+    "a_model": "prod-neftune",
+    "b_model": "prod-baseline",
+    "label": "A"
+  },
+  {
+    "id": "p11_c2",
+    "prompt": "Convince me, in one paragraph, to learn a new language.",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-adambeta2",
+    "label": "A"
+  },
+  {
+    "id": "p07_c1",
+    "prompt": "Write a short, kind reply to a friend who just lost their job.",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-bestbet",
+    "label": "A"
+  },
+  {
+    "id": "p02_c4",
+    "prompt": "I think my friend is upset with me but won't say why. What should I do?",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "B"
+  },
+  {
+    "id": "p01_c2",
+    "prompt": "Explain quantum entanglement using a household analogy a kid would understand.",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-adambeta2",
+    "b_model": "prod-bestbet",
+    "label": "B"
+  },
+  {
+    "id": "p09_c3",
+    "prompt": "Describe the smell of rain in 3 sentences.",
+    "axis": "low-end differentiation",
+    "a_model": "prod-baseline",
+    "b_model": "prod-neftune",
+    "label": "B"
+  },
+  {
+    "id": "p08_c3",
+    "prompt": "What's wrong with this Python code? `def avg(lst): return sum(lst) / len(lst)`",
+    "axis": "low-end differentiation",
+    "a_model": "prod-baseline",
+    "b_model": "prod-neftune",
+    "label": "B"
+  },
+  {
+    "id": "p07_c0",
+    "prompt": "Write a short, kind reply to a friend who just lost their job.",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "p08_c4",
+    "prompt": "What's wrong with this Python code? `def avg(lst): return sum(lst) / len(lst)`",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "base",
+    "b_model": "prod-bestbet-v2",
+    "label": "B"
+  },
+  {
+    "id": "p03_c0",
+    "prompt": "Compare React and Vue from a maintainability standpoint.",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet-v2",
+    "label": "B"
+  },
+  {
+    "id": "p10_c4",
+    "prompt": "Argue against the idea that 'money can't buy happiness.'",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "A"
+  },
+  {
+    "id": "p05_c1",
+    "prompt": "Why does the Pythagorean theorem actually work? Give intuition, not just a proof.",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-bestbet-v2",
+    "label": "B"
+  },
+  {
+    "id": "p05_c2",
+    "prompt": "Why does the Pythagorean theorem actually work? Give intuition, not just a proof.",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-adambeta2",
+    "label": "B"
+  },
+  {
+    "id": "p01_c0",
+    "prompt": "Explain quantum entanglement using a household analogy a kid would understand.",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "p00_c2",
+    "prompt": "Write the opening line of a noir detective novel.",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-adambeta2",
+    "b_model": "prod-bestbet",
+    "label": "A"
+  },
+  {
+    "id": "p02_c3",
+    "prompt": "I think my friend is upset with me but won't say why. What should I do?",
+    "axis": "low-end differentiation",
+    "a_model": "prod-neftune",
+    "b_model": "prod-baseline",
+    "label": "B"
+  },
+  {
+    "id": "p06_c2",
+    "prompt": "What's a common cause of teams missing deadlines that managers tend to overlook?",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-adambeta2",
+    "b_model": "prod-bestbet",
+    "label": "A"
+  },
+  {
+    "id": "p11_c0",
+    "prompt": "Convince me, in one paragraph, to learn a new language.",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-baseline",
+    "label": "B"
+  },
+  {
+    "id": "p07_c2",
+    "prompt": "Write a short, kind reply to a friend who just lost their job.",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-adambeta2",
+    "b_model": "prod-bestbet",
+    "label": "A"
+  },
+  {
+    "id": "p04_c3",
+    "prompt": "Plan one week of dinners for someone trying to eat more vegetables.",
+    "axis": "low-end differentiation",
+    "a_model": "prod-neftune",
+    "b_model": "prod-baseline",
+    "label": "A"
+  },
+  {
+    "id": "p01_c1",
+    "prompt": "Explain quantum entanglement using a household analogy a kid would understand.",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-bestbet",
+    "label": "B"
+  },
+  {
+    "id": "p06_c4",
+    "prompt": "What's a common cause of teams missing deadlines that managers tend to overlook?",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "A"
+  },
+  {
+    "id": "p10_c2",
+    "prompt": "Argue against the idea that 'money can't buy happiness.'",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-adambeta2",
+    "b_model": "prod-bestbet",
+    "label": "B"
+  },
+  {
+    "id": "p00_c4",
+    "prompt": "Write the opening line of a noir detective novel.",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "B"
+  },
+  {
+    "id": "p00_c3",
+    "prompt": "Write the opening line of a noir detective novel.",
+    "axis": "low-end differentiation",
+    "a_model": "prod-baseline",
+    "b_model": "prod-neftune",
+    "label": "tie"
+  },
+  {
+    "id": "p08_c1",
+    "prompt": "What's wrong with this Python code? `def avg(lst): return sum(lst) / len(lst)`",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "p05_c0",
+    "prompt": "Why does the Pythagorean theorem actually work? Give intuition, not just a proof.",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet-v2",
+    "label": "B"
+  },
+  {
+    "id": "p01_c4",
+    "prompt": "Explain quantum entanglement using a household analogy a kid would understand.",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "B"
+  },
+  {
+    "id": "p04_c0",
+    "prompt": "Plan one week of dinners for someone trying to eat more vegetables.",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  }
+]

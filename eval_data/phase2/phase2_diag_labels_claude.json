@@ -1,0 +1,422 @@
+[
+  {
+    "id": "p02_c2",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-adambeta2",
+    "b_model": "prod-bestbet",
+    "label": "B"
+  },
+  {
+    "id": "p09_c0",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-baseline",
+    "label": "B"
+  },
+  {
+    "id": "p02_c0",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-baseline",
+    "label": "B"
+  },
+  {
+    "id": "p08_c0",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "p10_c0",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-baseline",
+    "label": "B"
+  },
+  {
+    "id": "p10_c3",
+    "axis": "low-end differentiation",
+    "a_model": "prod-baseline",
+    "b_model": "prod-neftune",
+    "label": "B"
+  },
+  {
+    "id": "p06_c0",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet-v2",
+    "label": "B"
+  },
+  {
+    "id": "p03_c1",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-bestbet",
+    "label": "A"
+  },
+  {
+    "id": "p00_c0",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-baseline",
+    "label": "B"
+  },
+  {
+    "id": "p03_c4",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "A"
+  },
+  {
+    "id": "p04_c4",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "base",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "p02_c1",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-bestbet",
+    "label": "B"
+  },
+  {
+    "id": "p01_c3",
+    "axis": "low-end differentiation",
+    "a_model": "prod-baseline",
+    "b_model": "prod-neftune",
+    "label": "B"
+  },
+  {
+    "id": "p05_c4",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "B"
+  },
+  {
+    "id": "p11_c4",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "B"
+  },
+  {
+    "id": "p10_c1",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "p04_c1",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-bestbet",
+    "label": "A"
+  },
+  {
+    "id": "p07_c4",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "B"
+  },
+  {
+    "id": "p04_c2",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-adambeta2",
+    "label": "B"
+  },
+  {
+    "id": "p09_c2",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-adambeta2",
+    "label": "A"
+  },
+  {
+    "id": "p03_c3",
+    "axis": "low-end differentiation",
+    "a_model": "prod-neftune",
+    "b_model": "prod-baseline",
+    "label": "A"
+  },
+  {
+    "id": "p06_c1",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-bestbet",
+    "label": "A"
+  },
+  {
+    "id": "p05_c3",
+    "axis": "low-end differentiation",
+    "a_model": "prod-neftune",
+    "b_model": "prod-baseline",
+    "label": "A"
+  },
+  {
+    "id": "p08_c2",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-adambeta2",
+    "label": "A"
+  },
+  {
+    "id": "p09_c1",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "p11_c3",
+    "axis": "low-end differentiation",
+    "a_model": "prod-neftune",
+    "b_model": "prod-baseline",
+    "label": "B"
+  },
+  {
+    "id": "p11_c1",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "p09_c4",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "B"
+  },
+  {
+    "id": "p03_c2",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-adambeta2",
+    "label": "A"
+  },
+  {
+    "id": "p00_c1",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-bestbet",
+    "label": "B"
+  },
+  {
+    "id": "p07_c3",
+    "axis": "low-end differentiation",
+    "a_model": "prod-neftune",
+    "b_model": "prod-baseline",
+    "label": "B"
+  },
+  {
+    "id": "p06_c3",
+    "axis": "low-end differentiation",
+    "a_model": "prod-neftune",
+    "b_model": "prod-baseline",
+    "label": "A"
+  },
+  {
+    "id": "p11_c2",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-adambeta2",
+    "label": "A"
+  },
+  {
+    "id": "p07_c1",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-bestbet",
+    "label": "B"
+  },
+  {
+    "id": "p02_c4",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "B"
+  },
+  {
+    "id": "p01_c2",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-adambeta2",
+    "b_model": "prod-bestbet",
+    "label": "A"
+  },
+  {
+    "id": "p09_c3",
+    "axis": "low-end differentiation",
+    "a_model": "prod-baseline",
+    "b_model": "prod-neftune",
+    "label": "B"
+  },
+  {
+    "id": "p08_c3",
+    "axis": "low-end differentiation",
+    "a_model": "prod-baseline",
+    "b_model": "prod-neftune",
+    "label": "B"
+  },
+  {
+    "id": "p07_c0",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "p08_c4",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "base",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "p03_c0",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet-v2",
+    "label": "B"
+  },
+  {
+    "id": "p10_c4",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "B"
+  },
+  {
+    "id": "p05_c1",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "p05_c2",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-adambeta2",
+    "label": "A"
+  },
+  {
+    "id": "p01_c0",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet-v2",
+    "label": "B"
+  },
+  {
+    "id": "p00_c2",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-adambeta2",
+    "b_model": "prod-bestbet",
+    "label": "B"
+  },
+  {
+    "id": "p02_c3",
+    "axis": "low-end differentiation",
+    "a_model": "prod-neftune",
+    "b_model": "prod-baseline",
+    "label": "A"
+  },
+  {
+    "id": "p06_c2",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-adambeta2",
+    "b_model": "prod-bestbet",
+    "label": "A"
+  },
+  {
+    "id": "p11_c0",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-baseline",
+    "label": "B"
+  },
+  {
+    "id": "p07_c2",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-adambeta2",
+    "b_model": "prod-bestbet",
+    "label": "A"
+  },
+  {
+    "id": "p04_c3",
+    "axis": "low-end differentiation",
+    "a_model": "prod-neftune",
+    "b_model": "prod-baseline",
+    "label": "A"
+  },
+  {
+    "id": "p01_c1",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-bestbet",
+    "label": "A"
+  },
+  {
+    "id": "p06_c4",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "A"
+  },
+  {
+    "id": "p10_c2",
+    "axis": "agent's best vs improved recipe",
+    "a_model": "prod-adambeta2",
+    "b_model": "prod-bestbet",
+    "label": "B"
+  },
+  {
+    "id": "p00_c4",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "B"
+  },
+  {
+    "id": "p00_c3",
+    "axis": "low-end differentiation",
+    "a_model": "prod-baseline",
+    "b_model": "prod-neftune",
+    "label": "tie"
+  },
+  {
+    "id": "p08_c1",
+    "axis": "LoRA rank lift (r=32 vs r=64)",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "p05_c0",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet-v2",
+    "label": "tie"
+  },
+  {
+    "id": "p01_c4",
+    "axis": "DPO worked? base (untrained) vs best (LoRA r=64)",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "A"
+  },
+  {
+    "id": "p04_c0",
+    "axis": "endpoints (lowest vs highest)",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet-v2",
+    "label": "tie"
+  }
+]

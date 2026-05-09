@@ -1,0 +1,352 @@
+[
+  {
+    "id": "pa03__prod-bestbet__vs__prod-bestbet-v2",
+    "axis": "prod-bestbet vs prod-bestbet-v2",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-bestbet",
+    "label": "A"
+  },
+  {
+    "id": "cf02__prod-baseline__vs__prod-adambeta2",
+    "axis": "prod-baseline vs prod-adambeta2",
+    "a_model": "prod-adambeta2",
+    "b_model": "prod-baseline",
+    "label": "A"
+  },
+  {
+    "id": "lp04__prod-baseline__vs__prod-bestbet",
+    "axis": "prod-baseline vs prod-bestbet",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-baseline",
+    "label": "A"
+  },
+  {
+    "id": "pa03__base__vs__prod-baseline",
+    "axis": "base vs prod-baseline",
+    "a_model": "base",
+    "b_model": "prod-baseline",
+    "label": "B"
+  },
+  {
+    "id": "et05__base__vs__prod-adambeta2",
+    "axis": "base vs prod-adambeta2",
+    "a_model": "base",
+    "b_model": "prod-adambeta2",
+    "label": "A"
+  },
+  {
+    "id": "cw04__prod-baseline__vs__prod-bestbet-v2",
+    "axis": "prod-baseline vs prod-bestbet-v2",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-baseline",
+    "label": "A"
+  },
+  {
+    "id": "pc08__prod-adambeta2__vs__prod-bestbet",
+    "axis": "prod-adambeta2 vs prod-bestbet",
+    "a_model": "prod-adambeta2",
+    "b_model": "prod-bestbet",
+    "label": "B"
+  },
+  {
+    "id": "cf01__prod-baseline__vs__prod-adambeta2",
+    "axis": "prod-baseline vs prod-adambeta2",
+    "a_model": "prod-baseline",
+    "b_model": "prod-adambeta2",
+    "label": "B"
+  },
+  {
+    "id": "po04__prod-baseline__vs__prod-adambeta2",
+    "axis": "prod-baseline vs prod-adambeta2",
+    "a_model": "prod-baseline",
+    "b_model": "prod-adambeta2",
+    "label": "B"
+  },
+  {
+    "id": "pa07__base__vs__prod-baseline",
+    "axis": "base vs prod-baseline",
+    "a_model": "base",
+    "b_model": "prod-baseline",
+    "label": "tie"
+  },
+  {
+    "id": "cw05__prod-baseline__vs__prod-bestbet",
+    "axis": "prod-baseline vs prod-bestbet",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet",
+    "label": "B"
+  },
+  {
+    "id": "pa01__base__vs__prod-adambeta2",
+    "axis": "base vs prod-adambeta2",
+    "a_model": "base",
+    "b_model": "prod-adambeta2",
+    "label": "tie"
+  },
+  {
+    "id": "cw06__prod-adambeta2__vs__prod-bestbet",
+    "axis": "prod-adambeta2 vs prod-bestbet",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-adambeta2",
+    "label": "A"
+  },
+  {
+    "id": "po04__prod-adambeta2__vs__prod-bestbet-v2",
+    "axis": "prod-adambeta2 vs prod-bestbet-v2",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-adambeta2",
+    "label": "A"
+  },
+  {
+    "id": "pc06__prod-adambeta2__vs__prod-bestbet",
+    "axis": "prod-adambeta2 vs prod-bestbet",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-adambeta2",
+    "label": "B"
+  },
+  {
+    "id": "lp02__base__vs__prod-adambeta2",
+    "axis": "base vs prod-adambeta2",
+    "a_model": "prod-adambeta2",
+    "b_model": "base",
+    "label": "A"
+  },
+  {
+    "id": "cw04__prod-adambeta2__vs__prod-bestbet-v2",
+    "axis": "prod-adambeta2 vs prod-bestbet-v2",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-adambeta2",
+    "label": "A"
+  },
+  {
+    "id": "cf01__prod-adambeta2__vs__prod-bestbet-v2",
+    "axis": "prod-adambeta2 vs prod-bestbet-v2",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-adambeta2",
+    "label": "A"
+  },
+  {
+    "id": "lp03__prod-adambeta2__vs__prod-bestbet",
+    "axis": "prod-adambeta2 vs prod-bestbet",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-adambeta2",
+    "label": "A"
+  },
+  {
+    "id": "cw04__prod-bestbet__vs__prod-bestbet-v2",
+    "axis": "prod-bestbet vs prod-bestbet-v2",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-bestbet",
+    "label": "A"
+  },
+  {
+    "id": "cf03__base__vs__prod-bestbet",
+    "axis": "base vs prod-bestbet",
+    "a_model": "base",
+    "b_model": "prod-bestbet",
+    "label": "tie"
+  },
+  {
+    "id": "pa05__prod-bestbet__vs__prod-bestbet-v2",
+    "axis": "prod-bestbet vs prod-bestbet-v2",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-bestbet",
+    "label": "tie"
+  },
+  {
+    "id": "lp01__base__vs__prod-bestbet-v2",
+    "axis": "base vs prod-bestbet-v2",
+    "a_model": "base",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "po06__prod-baseline__vs__prod-bestbet",
+    "axis": "prod-baseline vs prod-bestbet",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-baseline",
+    "label": "tie"
+  },
+  {
+    "id": "pc02__base__vs__prod-adambeta2",
+    "axis": "base vs prod-adambeta2",
+    "a_model": "prod-adambeta2",
+    "b_model": "base",
+    "label": "B"
+  },
+  {
+    "id": "po05__prod-baseline__vs__prod-bestbet-v2",
+    "axis": "prod-baseline vs prod-bestbet-v2",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet-v2",
+    "label": "B"
+  },
+  {
+    "id": "pa05__prod-baseline__vs__prod-bestbet-v2",
+    "axis": "prod-baseline vs prod-bestbet-v2",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet-v2",
+    "label": "B"
+  },
+  {
+    "id": "et02__prod-baseline__vs__prod-adambeta2",
+    "axis": "prod-baseline vs prod-adambeta2",
+    "a_model": "prod-baseline",
+    "b_model": "prod-adambeta2",
+    "label": "tie"
+  },
+  {
+    "id": "pa01__prod-baseline__vs__prod-bestbet",
+    "axis": "prod-baseline vs prod-bestbet",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet",
+    "label": "B"
+  },
+  {
+    "id": "sd01__base__vs__prod-baseline",
+    "axis": "base vs prod-baseline",
+    "a_model": "base",
+    "b_model": "prod-baseline",
+    "label": "B"
+  },
+  {
+    "id": "pc07__prod-adambeta2__vs__prod-bestbet",
+    "axis": "prod-adambeta2 vs prod-bestbet",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-adambeta2",
+    "label": "A"
+  },
+  {
+    "id": "et05__prod-bestbet__vs__prod-bestbet-v2",
+    "axis": "prod-bestbet vs prod-bestbet-v2",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "po07__base__vs__prod-baseline",
+    "axis": "base vs prod-baseline",
+    "a_model": "prod-baseline",
+    "b_model": "base",
+    "label": "tie"
+  },
+  {
+    "id": "po07__prod-baseline__vs__prod-adambeta2",
+    "axis": "prod-baseline vs prod-adambeta2",
+    "a_model": "prod-adambeta2",
+    "b_model": "prod-baseline",
+    "label": "A"
+  },
+  {
+    "id": "cf02__base__vs__prod-bestbet-v2",
+    "axis": "base vs prod-bestbet-v2",
+    "a_model": "base",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "po06__prod-bestbet__vs__prod-bestbet-v2",
+    "axis": "prod-bestbet vs prod-bestbet-v2",
+    "a_model": "prod-bestbet",
+    "b_model": "prod-bestbet-v2",
+    "label": "B"
+  },
+  {
+    "id": "pa07__prod-baseline__vs__prod-bestbet-v2",
+    "axis": "prod-baseline vs prod-bestbet-v2",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-baseline",
+    "label": "tie"
+  },
+  {
+    "id": "pc03__prod-baseline__vs__prod-bestbet",
+    "axis": "prod-baseline vs prod-bestbet",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet",
+    "label": "A"
+  },
+  {
+    "id": "et04__base__vs__prod-bestbet-v2",
+    "axis": "base vs prod-bestbet-v2",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "B"
+  },
+  {
+    "id": "sd03__base__vs__prod-bestbet",
+    "axis": "base vs prod-bestbet",
+    "a_model": "base",
+    "b_model": "prod-bestbet",
+    "label": "B"
+  },
+  {
+    "id": "pc02__prod-baseline__vs__prod-bestbet-v2",
+    "axis": "prod-baseline vs prod-bestbet-v2",
+    "a_model": "prod-baseline",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "cw03__prod-adambeta2__vs__prod-bestbet-v2",
+    "axis": "prod-adambeta2 vs prod-bestbet-v2",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "prod-adambeta2",
+    "label": "B"
+  },
+  {
+    "id": "pc02__prod-adambeta2__vs__prod-bestbet-v2",
+    "axis": "prod-adambeta2 vs prod-bestbet-v2",
+    "a_model": "prod-adambeta2",
+    "b_model": "prod-bestbet-v2",
+    "label": "A"
+  },
+  {
+    "id": "po01__base__vs__prod-bestbet-v2",
+    "axis": "base vs prod-bestbet-v2",
+    "a_model": "base",
+    "b_model": "prod-bestbet-v2",
+    "label": "B"
+  },
+  {
+    "id": "cw01__base__vs__prod-bestbet",
+    "axis": "base vs prod-bestbet",
+    "a_model": "base",
+    "b_model": "prod-bestbet",
+    "label": "A"
+  },
+  {
+    "id": "pc06__base__vs__prod-bestbet",
+    "axis": "base vs prod-bestbet",
+    "a_model": "base",
+    "b_model": "prod-bestbet",
+    "label": "B"
+  },
+  {
+    "id": "po03__base__vs__prod-baseline",
+    "axis": "base vs prod-baseline",
+    "a_model": "prod-baseline",
+    "b_model": "base",
+    "label": "tie"
+  },
+  {
+    "id": "pa06__base__vs__prod-bestbet-v2",
+    "axis": "base vs prod-bestbet-v2",
+    "a_model": "prod-bestbet-v2",
+    "b_model": "base",
+    "label": "A"
+  },
+  {
+    "id": "pc08__base__vs__prod-bestbet",
+    "axis": "base vs prod-bestbet",
+    "a_model": "prod-bestbet",
+    "b_model": "base",
+    "label": "B"
+  },
+  {
+    "id": "po02__base__vs__prod-adambeta2",
+    "axis": "base vs prod-adambeta2",
+    "a_model": "prod-adambeta2",
+    "b_model": "base",
+    "label": "tie"
+  }
+]
