@@ -1,0 +1,1229 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Autoresearch × Prolific — Phase 2 results</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+:root {
+  --fg: #1a1a1a;
+  --muted: #5b5b5b;
+  --bg: #ffffff;
+  --panel: #f7f7f4;
+  --accent: #b85c00;
+  --accent-soft: #fcefe1;
+  --border: #d8d6d2;
+  --good: #1f6f3a;
+  --bad: #b8412f;
+  --tie: #888;
+  --hl-a: #2f6fb8;
+  --hl-b: #b8602f;
+}
+* { box-sizing: border-box; }
+body {
+  font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  color: var(--fg);
+  background: var(--bg);
+  margin: 0; padding: 0;
+}
+.wrap { max-width: 1080px; margin: 0 auto; padding: 40px 28px 80px; }
+header { margin-bottom: 36px; }
+header h1 { font-size: 28px; margin: 0 0 6px; letter-spacing: -0.01em; }
+header .subtitle { color: var(--muted); font-size: 15px; }
+header .meta { color: var(--muted); font-size: 12px; margin-top: 12px;
+               font-variant-numeric: tabular-nums; }
+.section { margin: 38px 0; }
+.section h2 { font-size: 20px; margin: 0 0 14px; letter-spacing: -0.005em; }
+.section h3 { font-size: 16px; margin: 22px 0 8px; color: var(--muted); }
+p { margin: 0 0 10px; }
+
+.theme-sample {
+  background: white; border-left: 2px solid var(--accent);
+  padding: 6px 12px; margin: 6px 0; font-size: 13px;
+  color: var(--muted); font-style: italic;
+}
+
+table { width: 100%; border-collapse: collapse; font-size: 14px;
+        margin: 8px 0 18px; }
+th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+th { background: var(--panel); font-weight: 600; font-size: 12px;
+     text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+td.num { text-align: right; font-variant-numeric: tabular-nums; }
+tr:hover td { background: rgba(184,92,0,0.04); }
+.pill {
+  display: inline-block; padding: 2px 8px; border-radius: 10px;
+  font-size: 11px; font-weight: 600;
+}
+.pill.good { background: #d8f0e0; color: var(--good); }
+.pill.bad  { background: #f4dcd0; color: var(--bad); }
+.pill.tie  { background: #e8e8e8; color: var(--tie); }
+.kappa {
+  display: inline-block; padding: 2px 6px;
+  font-family: ui-monospace, monospace; font-size: 12px;
+  background: var(--panel); border-radius: 3px;
+  white-space: nowrap;
+}
+.bar {
+  display: inline-block; height: 10px; vertical-align: middle;
+  background: var(--accent); border-radius: 2px;
+}
+.bar-bg { background: var(--panel); border-radius: 2px;
+          display: inline-block; vertical-align: middle; }
+details {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 6px; padding: 12px 18px; margin: 10px 0;
+}
+details > summary { cursor: pointer; font-weight: 500; color: var(--fg);
+                    list-style: none; padding: 4px 0; }
+details > summary::-webkit-details-marker { display: none; }
+details > summary::before { content: "▸ "; color: var(--muted); margin-right: 4px;
+                             transition: transform 0.15s; display: inline-block; }
+details[open] > summary::before { transform: rotate(90deg); }
+
+.disagree-pair { background: white; border: 1px solid var(--border);
+                  padding: 14px 16px; border-radius: 4px; margin: 12px 0; }
+.disagree-pair .prompt-text {
+  font-style: italic; color: var(--muted); margin-bottom: 12px;
+  border-left: 2px solid var(--border); padding-left: 12px;
+}
+.disagree-pair .responses { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.response-card { padding: 12px 14px; border-radius: 4px; }
+.response-card.winner { background: #f0fbf4; border: 1px solid #bfe5cc; }
+.response-card.loser  { background: #fff8f5; border: 1px solid #e8c8b8; }
+.response-card .role  { font-size: 11px; font-weight: 700; color: var(--muted);
+                         text-transform: uppercase; letter-spacing: 0.06em;
+                         margin-bottom: 6px; }
+.response-card .text  { font-size: 13.5px; line-height: 1.55; white-space: pre-wrap;
+                         word-break: break-word; max-height: 280px; overflow-y: auto; }
+.disagree-pair .vote-summary {
+  font-size: 13px; color: var(--muted); margin-top: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.method { background: var(--panel); padding: 18px 22px; border-radius: 6px;
+          font-size: 14px; line-height: 1.6; }
+.method ul { padding-left: 20px; }
+
+footer { color: var(--muted); font-size: 12px; margin-top: 60px;
+         padding-top: 18px; border-top: 1px solid var(--border); }
+
+/* Provenance pills — applied next to recipe names everywhere */
+.tag {
+  display: inline-block; font-size: 10px; font-weight: 600;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 3px; vertical-align: 1px;
+  margin-right: 6px;
+}
+.tag-untrained { background: #e8e6e1; color: #5b5b5b; }
+.tag-agent     { background: #dbe7f5; color: #2f6fb8; }
+.tag-collab    { background: #fcefe1; color: #b85c00; }
+
+/* TL;DR card replacing the verdict + takeaways list */
+.tldr {
+  background: #f7f7f4; border-left: 3px solid #1a1a1a;
+  padding: 20px 26px; margin: 18px 0 28px;
+  border-radius: 4px;
+}
+.tldr p { font-size: 15.5px; line-height: 1.6; margin: 0 0 12px; }
+.tldr p:last-child { margin-bottom: 0; }
+
+/* Three-stage workflow grid */
+.workflow {
+  display: grid; grid-template-columns: 7fr 7fr 6fr; gap: 14px;
+  margin: 16px 0 22px;
+}
+.stage {
+  background: var(--panel); border: 1px solid var(--border);
+  padding: 14px 16px; border-radius: 4px;
+}
+.stage .stage-label {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--muted);
+  margin-bottom: 8px;
+}
+.stage h3 { font-size: 15px; margin: 0 0 8px; color: var(--fg); }
+.stage p  { font-size: 13.5px; line-height: 1.55; margin: 0; }
+@media (max-width: 720px) {
+  .workflow { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>When does an AI metric agree with humans?</h1>
+  <div class="subtitle">A Prolific preference study on 5 DPO recipes for SmolLM2-360M-Instruct.</div>
+  <div class="meta">
+    Generated 2026-05-13 14:10 UTC
+    · 1507 annotations
+    · 305 annotators
+    
+  </div>
+</header>
+<section class="section">
+  <h2>TL;DR</h2>
+  <div class="tldr">
+    <p>We trained <strong>SmolLM2-360M-Instruct</strong> on UltraFeedback preference
+    pairs using <a href="https://github.com/karpathy/autoresearch">Karpathy's autoresearch</a>
+    — a Claude agent that edits a training script, runs experiments, and iterates
+    against a held-out preference-accuracy metric (<code>val_pref_acc</code>).
+    The agent ran 50 experiments and produced many checkpoints, rejecting most
+    because they didn't beat the starting recipe; we kept 2 of its best, within
+    a small val range, since the agent didn't push the metric far. A researcher
+    then asked the agent to inspect what it had tried and look for gaps. The
+    agent's response — LoRA adapters and high-margin data filtering, categories
+    it hadn't explored on its own — produced 2 more recipes.
+    Prolific annotators ran all 10 pairwise head-to-heads on 50 general-audience
+    prompts (1507 ratings).</p>
+
+    <p><strong>The agent's autonomous run did not improve the metric.</strong>
+    On its own, the autoresearch agent never lifted <code>val_pref_acc</code>
+    above the untrained reference's level of 0.500 — Recipe A
+    (val=0.464) and Recipe B
+    (val=0.492, the agent's best across 50
+    experiments) both sit <em>below</em> chance. Humans agreed: in head-to-heads
+    against the untrained base, annotators preferred the base ~47%
+    of the time over Recipe B. Standard full-FT DPO at the hyperparameters
+    the agent explored was, by both metric and humans, a regression.</p>
+
+    <p><strong>The researcher's meta-prompt unlocked the only recipes that
+    beat the untrained base.</strong> Once the researcher asked the agent to
+    look for gaps, the agent proposed LoRA adapters + high-margin data
+    filtering, lifting val_pref_acc from 0.492 to
+    0.648. Spearman ρ between
+    <code>val_pref_acc</code> and human-preference rank is
+    <strong>+0.80</strong> — the broad ordering matches. But at the
+    top the metric and humans disagree: the highest-scoring recipe
+    (<span class="tag tag-collab">agent + researcher</span> Recipe D · deeper LoRA + filtered data, val=0.648) is
+    <em>not</em> the one humans prefer most (<span class="tag tag-collab">agent + researcher</span> Recipe C · LoRA + filtered data,
+    val=0.628).</p>
+
+    <p><strong>HITL moved the result at two stages.</strong> Research-time:
+    the researcher's meta-prompt was the difference between regression and
+    improvement. Evaluation-time: Prolific annotators disambiguated the top
+    two recipes the metric couldn't tell apart. Without either step, we'd
+    have shipped a noticeably worse model.</p>
+  </div>
+</section>
+<section class="section">
+  <h2>The workflow we tested</h2>
+  <p>Three stages, three contributors. Each tried to make the model better;
+  each had a blind spot the next stage filled in.</p>
+  <div class="workflow">
+    <div class="stage">
+      <div class="stage-label"><span class="tag tag-agent">agent</span> Stage 1</div>
+      <h3>Search the recipe space</h3>
+      <p>The autoresearch agent edited <code>train.py</code>, launched DPO
+      runs, and iterated across <strong>50 experiments</strong> (45 produced
+      valid output; 5 failed). It rejected most checkpoints because they
+      didn't beat the starting recipe. We kept 2 of its best
+      (0.464–0.492).
+      Both stayed <em>below</em> the untrained reference's chance level
+      (0.500) — the agent's autonomous search did not lift the metric over
+      no training at all.</p>
+    </div>
+    <div class="stage">
+      <div class="stage-label"><span class="tag tag-collab">agent + researcher</span> Stage 2</div>
+      <h3>Ask the agent what's missing</h3>
+      <p>A researcher prompted the agent to inspect its own trajectory and
+      identify what it hadn't tried. The agent's response added LoRA adapters
+      and score-margin-filtered UltraFeedback — categories of change it hadn't
+      explored on its own. The same DPO loop with those additions produced
+      Recipes C and D, lifting val_pref_acc to
+      0.628–0.648.</p>
+    </div>
+    <div class="stage">
+      <div class="stage-label" style="color:#444;">Stage 3 · Prolific annotators</div>
+      <h3>Test with humans</h3>
+      <p>Five models × 10 pairs × 50 prompts × 3 annotators =
+      1507 pairwise judgements from 305 participants.
+      Annotators saw responses blind — no labels, no provenance — and picked
+      the one they preferred or called it a tie.</p>
+    </div>
+  </div>
+</section>
+<section class="section">
+  <h2>The recipes</h2>
+  <p>Five models. The pill next to each name shows which stage produced it.</p>
+  <table style="table-layout: fixed;">
+    <colgroup>
+      <col style="width: 38%;">
+      <col style="width: 10%;">
+      <col style="width: 52%;">
+    </colgroup>
+    <thead><tr><th>Recipe</th><th class='num'>val_pref_acc</th><th>What it is</th></tr></thead>
+    <tbody>
+<tr>
+  <td><span class="tag tag-untrained">untrained</span><strong>Original model</strong>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px;font-family:ui-monospace,monospace;">base</div></td>
+  <td class='num'>0.500</td>
+  <td style="font-size:13px;">SmolLM2-360M-Instruct as published — no extra training.</td>
+</tr>
+<tr>
+  <td><span class="tag tag-agent">agent</span><strong>Recipe A · default DPO</strong>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px;font-family:ui-monospace,monospace;">prod-baseline</div></td>
+  <td class='num'>0.464</td>
+  <td style="font-size:13px;">DPO at default knobs (β=0.1, lr=5e-7, 1 epoch over a sample of UltraFeedback). One of the agent&#x27;s earlier checkpoints, kept as a reference.</td>
+</tr>
+<tr>
+  <td><span class="tag tag-agent">agent</span><strong>Recipe B · agent&#x27;s pick</strong>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px;font-family:ui-monospace,monospace;">prod-adambeta2</div></td>
+  <td class='num'>0.492</td>
+  <td style="font-size:13px;">The recipe the autoresearch agent settled on: constant_with_warmup LR + NEFTune + adam_β₂=0.95. The best of the agent&#x27;s many checkpoints by val_pref_acc.</td>
+</tr>
+<tr>
+  <td><span class="tag tag-collab">agent + researcher</span><strong>Recipe C · LoRA + filtered data</strong>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px;font-family:ui-monospace,monospace;">prod-bestbet</div></td>
+  <td class='num'>0.628</td>
+  <td style="font-size:13px;">Came from a researcher-prompted re-run: the researcher asked the agent to inspect its own trajectory and find what it was missing. The agent proposed LoRA (rank 32) + UltraFeedback filtered to high-margin preference pairs.</td>
+</tr>
+<tr>
+  <td><span class="tag tag-collab">agent + researcher</span><strong>Recipe D · deeper LoRA + filtered data</strong>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px;font-family:ui-monospace,monospace;">prod-bestbet-v2</div></td>
+  <td class='num'>0.648</td>
+  <td style="font-size:13px;">Same as Recipe C with LoRA rank 64 (larger adapter — more capacity to adapt to UltraFeedback&#x27;s chosen style).</td>
+</tr></tbody>
+  </table>
+</section>
+<section class="section">
+  <h2>Headline result</h2>
+  <p>If <code>val_pref_acc</code> were a perfect predictor of human preference,
+  the four trained recipes would line up monotonically along the dotted "chance"
+  line — higher score, more often preferred over the untrained base. Here's
+  what 1507 pairwise ratings actually show:</p>
+  <div id="headline-chart" style="height:420px;"></div>
+  <p style="color: var(--muted); font-size: 13px; margin-top: 14px;">
+    Points colored by provenance: <span class="tag tag-agent">agent</span>agent
+    recipes (A, B) · <span class="tag tag-collab">agent + researcher</span>agent + researcher
+    recipes (C, D). Dotted lines mark chance: horizontal = 50% human
+    preference vs base, vertical = val_pref_acc of the untrained reference.
+  </p>
+  <p>Three things stand out:</p>
+  <ul>
+    <li><strong>The agent's runs alone made the model worse than no training.</strong>
+        Recipes A and B both score <em>below</em> 0.5 on val_pref_acc — by the
+        autoresearch agent's own metric, they're less aligned with
+        UltraFeedback's preference labels than the untrained reference (which
+        sits at 0.5 by construction). Humans agree: against the untrained
+        base, annotators preferred the base ~47%
+        of the time over Recipe A and ~47%
+        of the time over Recipe B.</li>
+    <li><strong>Only the researcher-prompted recipes cross the line.</strong>
+        Recipes C and D — the ones the agent proposed after the researcher
+        asked it to look for gaps — are the only DPO runs that humans prefer
+        over the untrained base, and only by a small margin
+        (66% and
+        59% respectively).</li>
+    <li><strong>At the top, the metric and humans disagree.</strong> Spearman
+        ρ between val_pref_acc and human preference is
+        <strong>+0.80</strong> — the broad ordering matches. But
+        within the agent + researcher pair, the metric ranks D higher
+        (<span class="tag tag-collab">agent + researcher</span> Recipe D · deeper LoRA + filtered data, val=0.648) while
+        humans pick <span class="tag tag-collab">agent + researcher</span> Recipe C · LoRA + filtered data (BT strength
+        1.17, highest of any recipe).</li>
+  </ul>
+  <p>So the headline isn't "DPO works." It's: <em>the agent's autonomous
+  recipe search regressed the model; the researcher's meta-prompt unlocked
+  the only recipes that beat the untrained base; and within those, humans
+  picked a different winner than the metric.</em></p>
+</section>
+<section class="section">
+  <h2>The interesting wrinkle</h2>
+  <p><span class="tag tag-collab">agent + researcher</span> Recipe C · LoRA + filtered data and <span class="tag tag-collab">agent + researcher</span> Recipe D · deeper LoRA + filtered data are the same recipe
+  with one knob changed: LoRA rank 32 vs 64 (D has more adapter capacity). By
+  the metric, D is the better model — val_pref_acc rises from
+  0.628 to 0.648.
+  By humans, D is the <em>worse</em> model — Bradley-Terry strength drops from
+  1.17 to 1.11.</p>
+
+  <p>Tracking three steps along the val_pref_acc axis shows how the metric's
+  signal changes character as it climbs:</p>
+  <table style="table-layout: fixed;">
+    <colgroup>
+      <col style="width: 38%;">
+      <col style="width: 14%;">
+      <col style="width: 18%;">
+      <col style="width: 30%;">
+    </colgroup>
+    <thead><tr>
+      <th>From → To</th>
+      <th class='num'>Δ val_pref_acc</th>
+      <th class='num'>Human pref vs base</th>
+      <th>Interpretation</th>
+    </tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="tag tag-agent">agent</span> Recipe A · default DPO → <span class="tag tag-agent">agent</span> Recipe B · agent's pick</td>
+        <td class='num'>+0.028</td>
+        <td class='num'>53% → 52%</td>
+        <td>Small metric gain, no clear effect on humans.</td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-agent">agent</span> Recipe B · agent's pick → <span class="tag tag-collab">agent + researcher</span> Recipe C · LoRA + filtered data</td>
+        <td class='num'>+0.136</td>
+        <td class='num'>52% → 66%</td>
+        <td><strong>Big metric gain, clearly visible to humans.</strong></td>
+      </tr>
+      <tr>
+        <td><span class="tag tag-collab">agent + researcher</span> Recipe C · LoRA + filtered data → <span class="tag tag-collab">agent + researcher</span> Recipe D · deeper LoRA + filtered data</td>
+        <td class='num'>+0.020</td>
+        <td class='num'>66% → 60%</td>
+        <td><strong>Small metric gain, humans <em>reverse</em>.</strong></td>
+      </tr>
+    </tbody>
+  </table>
+  <p>The pattern: the metric is useful for finding the right neighborhood and
+  even tracks human preference within it. At the very top it starts pointing
+  at the wrong door.</p>
+</section>
+<section class="section">
+  <h2>What's behind it</h2>
+  <p>UltraFeedback's "chosen" labels — what <code>val_pref_acc</code> is measured
+  against — come from <strong>GPT-4 acting as a judge</strong>. So the metric
+  measures one thing precisely: <em>how often does our policy agree with GPT-4
+  about which response is better?</em></p>
+  <p>GPT-4-as-judge has well-documented systematic biases. It prefers longer
+  responses, more structured ones (bullets, headers), and ones that <em>look</em>
+  thorough and helpful (preambles, comprehensive lists, hedging). Within the
+  sweet spot, optimizing toward GPT-4 is useful — humans agree GPT-4-style
+  structure is often clearer. Past the sweet spot, the model becomes <em>too</em>
+  GPT-4-like: too long, too bulleted, too hedged. That's where humans tap out.</p>
+  <p><span class="tag tag-collab">agent + researcher</span> Recipe D · deeper LoRA + filtered data has more capacity to mirror UltraFeedback's
+  chosen style — the larger LoRA adapter is what tips it past the sweet spot.
+  Same recipe, more parameters, higher metric score, worse model by humans.</p>
+
+  <h3>Where the metric and humans diverge most</h3>
+  <p>How often humans preferred the lower-val_pref_acc model, by prompt
+  category. Higher rate = the metric is less reliable in this category (humans
+  more often went the other way).</p>
+  <table style="table-layout: fixed; max-width: 860px;">
+    <colgroup>
+      <col style="width: 26%;">
+      <col style="width: 28%;">
+      <col style="width: 46%;">
+    </colgroup>
+    <thead><tr>
+      <th>Category</th>
+      <th class='num'>Lower-val wins / total</th>
+      <th>Disagreement rate</th>
+    </tr></thead>
+    <tbody>
+<tr>
+  <td>emotional tone</td>
+  <td class='num'>24 / 40</td>
+  <td style='white-space: nowrap;'>
+    <span class='bar-bg' style='width:140px;'>
+      <span class='bar' style='width:96px;background:#b8412f;'></span>
+    </span>
+    <span style='margin-left:8px;font-variant-numeric:tabular-nums;font-size:13px;color:#b8412f;font-weight:600;'>60%</span>
+  </td>
+</tr>
+<tr>
+  <td>pedagogical clarity</td>
+  <td class='num'>33 / 66</td>
+  <td style='white-space: nowrap;'>
+    <span class='bar-bg' style='width:140px;'>
+      <span class='bar' style='width:80px;background:#b8412f;'></span>
+    </span>
+    <span style='margin-left:8px;font-variant-numeric:tabular-nums;font-size:13px;color:#b8412f;font-weight:600;'>50%</span>
+  </td>
+</tr>
+<tr>
+  <td>creative writing</td>
+  <td class='num'>31 / 66</td>
+  <td style='white-space: nowrap;'>
+    <span class='bar-bg' style='width:140px;'>
+      <span class='bar' style='width:75px;background:#b85c00;'></span>
+    </span>
+    <span style='margin-left:8px;font-variant-numeric:tabular-nums;font-size:13px;color:#b85c00;font-weight:600;'>47%</span>
+  </td>
+</tr>
+<tr>
+  <td>sensory descriptive</td>
+  <td class='num'>18 / 41</td>
+  <td style='white-space: nowrap;'>
+    <span class='bar-bg' style='width:140px;'>
+      <span class='bar' style='width:70px;background:#b85c00;'></span>
+    </span>
+    <span style='margin-left:8px;font-variant-numeric:tabular-nums;font-size:13px;color:#b85c00;font-weight:600;'>44%</span>
+  </td>
+</tr>
+<tr>
+  <td>persuasive opinion</td>
+  <td class='num'>26 / 63</td>
+  <td style='white-space: nowrap;'>
+    <span class='bar-bg' style='width:140px;'>
+      <span class='bar' style='width:66px;background:#b85c00;'></span>
+    </span>
+    <span style='margin-left:8px;font-variant-numeric:tabular-nums;font-size:13px;color:#b85c00;font-weight:600;'>41%</span>
+  </td>
+</tr>
+<tr>
+  <td>common factual</td>
+  <td class='num'>18 / 46</td>
+  <td style='white-space: nowrap;'>
+    <span class='bar-bg' style='width:140px;'>
+      <span class='bar' style='width:62px;background:#888;'></span>
+    </span>
+    <span style='margin-left:8px;font-variant-numeric:tabular-nums;font-size:13px;color:#888;font-weight:600;'>39%</span>
+  </td>
+</tr>
+<tr>
+  <td>light planning</td>
+  <td class='num'>12 / 33</td>
+  <td style='white-space: nowrap;'>
+    <span class='bar-bg' style='width:140px;'>
+      <span class='bar' style='width:58px;background:#888;'></span>
+    </span>
+    <span style='margin-left:8px;font-variant-numeric:tabular-nums;font-size:13px;color:#888;font-weight:600;'>36%</span>
+  </td>
+</tr>
+<tr>
+  <td>personal advice</td>
+  <td class='num'>21 / 72</td>
+  <td style='white-space: nowrap;'>
+    <span class='bar-bg' style='width:140px;'>
+      <span class='bar' style='width:46px;background:#888;'></span>
+    </span>
+    <span style='margin-left:8px;font-variant-numeric:tabular-nums;font-size:13px;color:#888;font-weight:600;'>29%</span>
+  </td>
+</tr></tbody>
+  </table>
+  <p>The metric works reasonably on <strong>instructional / advice</strong>
+  prompts — the closest match to UltraFeedback's training distribution. It
+  fails hardest on <strong>emotional tone</strong> and <strong>pedagogical
+  clarity</strong>, where humans want warm, concise, naturally-flowing
+  language and the metric pushes toward structured-looking thoroughness.</p>
+
+  <p>Length isn't the whole story either. Higher-val responses are <strong>1.39×</strong> longer than lower-val ones in scenarios where humans agreed with the metric, and <strong>1.23×</strong> longer in scenarios where humans <em>disagreed</em>. Humans aren't blanket-rejecting longer responses — they reject extra length on prompts where it doesn't earn its keep.</p>
+</section>
+<section class="section">
+  <h2>What humans saw that the metric didn't</h2>
+  <p>The metric outputs a single number. Humans wrote comments and showed
+  taste at the per-scenario level. Examples below: scenarios where humans
+  preferred the <em>lower</em>-val_pref_acc response — click to expand prompt
+  + both responses.</p>
+  
+<details class="disagree-pair">
+  <summary>
+    <span class="tag tag-agent">agent</span> Recipe B beat <span class="tag tag-collab">agent + researcher</span> Recipe D
+    (3–0–0)
+    · prompt pc04
+  </summary>
+  <div style="margin-top: 10px;">
+    <div class="prompt-text">Explain why ice floats on water in a way a kid would understand.</div>
+    <div class="responses">
+      <div class="response-card winner">
+        <div class="role">Picked by humans · Recipe B · agent&#x27;s pick (val=0.492)</div>
+        <div class="text">Ice floats on water because it&#x27;s made of ice! Ice is actually just like water but it&#x27;s made out of little crystals. When you put ice in water, the crystals on top will float on top of the water because they&#x27;re bigger and lighter than the ones below them. So, when you throw some ice into a glass of water, it floats on top of the water and stays there! Isn&#x27;t that cool?</div>
+      </div>
+      <div class="response-card loser">
+        <div class="role">Higher val_pref_acc · Recipe D · deeper LoRA + filtered data (val=0.648)</div>
+        <div class="text">Alright, imagine you have a big tub of ice and some water inside it. When you put the ice in the water, it&#x27;s like having a little piece of ice that can float on top of the water.
+
+Think of the water as being like a big, big pool of liquid. Now, when you put ice in that pool, it starts to get colder than the water. This is because the ice itself is made up of water molecules that are moving really fast and slowing down a bit.
+
+When these ice molecules slow down, they start to move faster and faster until they reach the speed of sound, which is about 1200 miles per hour or so. That&#x27;s pretty fast! So, when they start moving faster, they bump into the molecules of water next to them, creating little waves. These waves are called &quot;ice crystals&quot; because they&#x27;re like tiny little crystals or snowflakes, but even smaller!
+
+Now, the ice crystals are trying to slide over the water, but they&#x27;re too heavy. They&#x27;re stuck to the bottom of the pool because the water molecules underneath them are much warmer than the surface. So, the ice crystals end up floating on top of the water, just like how…</div>
+      </div>
+    </div>
+    <div class="vote-summary">
+      Annotator votes — Recipe B · agent&#x27;s pick: 3 · ties: 0 · Recipe D · deeper LoRA + filtered data: 0
+    </div>
+  </div>
+</details>
+<details class="disagree-pair">
+  <summary>
+    <span class="tag tag-agent">agent</span> Recipe B beat <span class="tag tag-collab">agent + researcher</span> Recipe D
+    (3–0–0)
+    · prompt cw03
+  </summary>
+  <div style="margin-top: 10px;">
+    <div class="prompt-text">Compose a haiku about autumn.</div>
+    <div class="responses">
+      <div class="response-card winner">
+        <div class="role">Picked by humans · Recipe B · agent&#x27;s pick (val=0.492)</div>
+        <div class="text">Autumn whispers secrets in the breeze,
+Lighting hues of red and gold so bright,
+Nature&#x27;s beauty unfolds, forever.</div>
+      </div>
+      <div class="response-card loser">
+        <div class="role">Higher val_pref_acc · Recipe D · deeper LoRA + filtered data (val=0.648)</div>
+        <div class="text">Autumn&#x27;s golden hue,
+Echoes through the forest wide,
+A season of change and delight.
+
+Autumn whispers secrets low,
+Beneath the leaves&#x27; soft sway,
+A time to slow and rest.
+
+Autumn&#x27;s autumn leaves,
+Leaves that have stood tall and bright,
+Reflect the changing world.
+
+Autumn&#x27;s harvest moon,
+Floats like a silver star,
+Inviting us to share.
+
+Autumn&#x27;s golden gold,
+In the rustling leaves and breeze,
+The beauty of the season.
+
+Autumn&#x27;s autumn leaves,
+Leaves that have stood tall and bright,
+Reflect the changing world.
+
+Autumn&#x27;s autumn leaves,
+Leaves that have stood tall and bright,
+Reflect the changing world.
+
+Autumn&#x27;s autumn leaves,
+Leaves that have stood tall and bright,
+Reflect the changing world.
+
+Autumn&#x27;s golden gold,
+In the rustling leaves and breeze,
+The beauty of the season.
+
+Autumn&#x27;s autumn leaves,
+Leaves that have stood tall and bright,
+Reflect the changing world.
+
+Autumn&#x27;s autumn leaves,
+Leaves that have stood tall and bright,
+Reflect the changing world.
+
+Autumn&#x27;s golden gold,
+In the rustling leaves and breeze,
+The beauty of the season.
+
+Autumn&#x27;s autumn leaves,
+Leaves that have…</div>
+      </div>
+    </div>
+    <div class="vote-summary">
+      Annotator votes — Recipe B · agent&#x27;s pick: 3 · ties: 0 · Recipe D · deeper LoRA + filtered data: 0
+    </div>
+  </div>
+</details>
+<details class="disagree-pair">
+  <summary>
+    <span class="tag tag-agent">agent</span> Recipe B beat <span class="tag tag-collab">agent + researcher</span> Recipe C
+    (3–0–0)
+    · prompt et02
+  </summary>
+  <div style="margin-top: 10px;">
+    <div class="prompt-text">Write a sympathetic message to someone going through a breakup.</div>
+    <div class="responses">
+      <div class="response-card winner">
+        <div class="role">Picked by humans · Recipe B · agent&#x27;s pick (val=0.492)</div>
+        <div class="text">I can see how difficult this might be for you, and I want to offer my sympathy and support. It takes a lot of courage to reach out and admit that things aren&#x27;t working out between you and your partner. Please know that you&#x27;re not alone in this journey, and there are people who care about you deeply.
+
+It&#x27;s normal to feel sad, angry, or confused when a relationship ends. It&#x27;s like a big piece of the puzzle falling apart, leaving you feeling isolated and uncertain. Allow yourself to process these emotions, but also remember that it&#x27;s okay to take time for yourself and prioritize your own healing.
+
+You&#x27;ve been through a significant change in your life, and it&#x27;s natural to feel a mix of emotions. Be patient with yourself as you navigate this new chapter. Reach out to friends, family, or a trusted mentor for support and guidance. You don&#x27;t have to go through this alone, and many people would be happy to offer their love and understanding.
+
+Remember that relationships involve growth and learning, and it&#x27;s okay if things take time to get back on track. Focus on nurturing your own…</div>
+      </div>
+      <div class="response-card loser">
+        <div class="role">Higher val_pref_acc · Recipe C · LoRA + filtered data (val=0.628)</div>
+        <div class="text">Dear [Name],
+
+I&#x27;m so sorry to hear that you&#x27;re going through a tough time right now. It&#x27;s completely understandable to feel this way after a significant relationship ends. Please know that your feelings are valid and it&#x27;s okay to take some time to grieve the loss of the person you once had.
+
+Firstly, allow yourself to process these emotions. Give yourself permission to feel whatever arises, whether it&#x27;s sadness, anger, or even relief. These feelings are a natural part of the healing journey, and they will pass over time.
+
+In terms of practical support, consider reaching out to friends, family, or a trusted confidant for emotional support. Talking to someone who cares about you can help you see things from different perspectives and provide comfort. If you feel comfortable doing so, you might also want to consider seeking professional help, such as counseling or therapy. They can offer guidance and coping strategies to navigate through the aftermath of a breakup.
+
+Remember, it&#x27;s essential to be kind to yourself during this challenging period. Don&#x27;t try to rush through the healing…</div>
+      </div>
+    </div>
+    <div class="vote-summary">
+      Annotator votes — Recipe B · agent&#x27;s pick: 3 · ties: 0 · Recipe C · LoRA + filtered data: 0
+    </div>
+  </div>
+</details>
+<details class="disagree-pair">
+  <summary>
+    <span class="tag tag-agent">agent</span> Recipe B beat <span class="tag tag-collab">agent + researcher</span> Recipe C
+    (3–0–0)
+    · prompt po01
+  </summary>
+  <div style="margin-top: 10px;">
+    <div class="prompt-text">Convince me, in one paragraph, to learn a new language.</div>
+    <div class="responses">
+      <div class="response-card winner">
+        <div class="role">Picked by humans · Recipe B · agent&#x27;s pick (val=0.492)</div>
+        <div class="text">Learning a new language can open up a world of possibilities, from reconnecting with distant cultures to unlocking new career opportunities and enhancing your cognitive abilities. It&#x27;s a rewarding experience that can be both challenging and enjoyable. By speaking multiple languages, you&#x27;ll not only improve your communication skills but also expand your travel experiences, broaden your social networks, and enhance your overall quality of life. So, why wait? Let&#x27;s embark on this exciting adventure together and discover the magic of languages together!</div>
+      </div>
+      <div class="response-card loser">
+        <div class="role">Higher val_pref_acc · Recipe C · LoRA + filtered data (val=0.628)</div>
+        <div class="text">To learn a new language, start by immersing yourself in the culture and customs of the target language. This will help you develop a deeper understanding of the language&#x27;s nuances and pronunciation, making it easier to practice speaking and listening skills. By speaking with native speakers, reading books, watching movies or TV shows, and engaging in conversations, you&#x27;ll gradually build your vocabulary and grammar proficiency, ultimately leading to improved fluency and confidence in your new language.</div>
+      </div>
+    </div>
+    <div class="vote-summary">
+      Annotator votes — Recipe B · agent&#x27;s pick: 3 · ties: 0 · Recipe C · LoRA + filtered data: 0
+    </div>
+  </div>
+</details>
+<details class="disagree-pair">
+  <summary>
+    <span class="tag tag-collab">agent + researcher</span> Recipe C beat <span class="tag tag-collab">agent + researcher</span> Recipe D
+    (3–0–0)
+    · prompt po06
+  </summary>
+  <div style="margin-top: 10px;">
+    <div class="prompt-text">Persuade me to try cooking at home more often.</div>
+    <div class="responses">
+      <div class="response-card winner">
+        <div class="role">Picked by humans · Recipe C · LoRA + filtered data (val=0.628)</div>
+        <div class="text">Hmm, trying out cooking at home can be a great way to learn new recipes, experiment with different ingredients, and enjoy the process of preparing your own meals. It&#x27;s a wonderful way to step away from fast food and convenience food, which often come with unhealthy ingredients. Plus, it&#x27;s a great opportunity to save money on food costs. Let&#x27;s explore some reasons why you might want to try cooking at home more often:
+
+1. **Improved Taste:** When you cook at home, you have complete control over the ingredients and preparation methods. You can add or remove ingredients as you see fit, and you get to taste each dish before it goes out of the kitchen.
+
+2. **Healthier Meals:** Cooking at home allows you to prepare healthier meals that are lower in fat and calories compared to pre-packaged or fast foods. You&#x27;ll also be able to incorporate more fruits, vegetables, lean proteins, and whole grains into your diet.
+
+3. **Time Management:** Home cooking can help you manage your time better. You&#x27;ll be less likely to find yourself rushing to get a meal ready when you&#x27;re cooking in the morning or…</div>
+      </div>
+      <div class="response-card loser">
+        <div class="role">Higher val_pref_acc · Recipe D · deeper LoRA + filtered data (val=0.648)</div>
+        <div class="text">Cooking at home can be a wonderful way to save time, indulge in delicious food, and take control of your culinary adventures. Here&#x27;s why you might want to consider cooking at home more often:
+
+1. **Reduced Food Waste**: By preparing your own meals, you&#x27;ll avoid the added expense and hassle of buying groceries or ordering takeout. Instead, you&#x27;ll have the satisfaction of knowing exactly what goes into each dish.
+
+2. **Better Health**: Homemade meals tend to be lower in calories, sugar, and unhealthy fats compared to their pre-packaged counterparts. Plus, you&#x27;ll be able to monitor your intake of certain ingredients and adjust your diet as needed.
+
+3. **Tastier Meals**: Cooking at home gives you the ability to cook with love and care. You can experiment with different spices, herbs, and ingredients to create unique flavors that might not be available at the store.
+
+4. **Time Efficiency**: If you&#x27;re someone who likes to cook multiple times a week, it can be a great way to free up time for other activities like exercise, work, or spending time with family and friends.
+
+5. **Creative…</div>
+      </div>
+    </div>
+    <div class="vote-summary">
+      Annotator votes — Recipe C · LoRA + filtered data: 3 · ties: 0 · Recipe D · deeper LoRA + filtered data: 0
+    </div>
+  </div>
+</details>
+  
+<h3>What annotators told us, in their own words</h3>
+<p>856 non-empty comments. Comments clustered thematically by an LLM (claude-sonnet-4-6). Each theme groups comments by the quality dimension annotators reacted to, not by surface keywords.</p>
+
+<details>
+  <summary>
+    <strong>More Detailed, Thorough, And Informative</strong>
+    <span style="color: var(--muted); font-size: 13px;">· 181 comments</span>
+  </summary>
+  <div style="margin-top: 8px;"><div style="color: var(--muted); font-size: 13px; margin: 4px 0 8px;">Annotators preferred responses that provided greater depth, comprehensiveness, specificity, and informative content.</div><div class="theme-sample">&ldquo;A was very expressive, touch so many points B didn&#x27;t touch&rdquo;</div><div class="theme-sample">&ldquo;A provides a real, fleshed-out, example of what to try by e.g detailing the Pomodoro technique. B is a close second with a similar list but less detail&rdquo;</div><div class="theme-sample">&ldquo;Option A is better because its more comprehensive, it covers a wider range of evidence based benefits&rdquo;</div><div class="theme-sample">&ldquo;B explained the process quite a bit better and had a more comprehensive answer.&rdquo;</div></div>
+</details>
+<details>
+  <summary>
+    <strong>Better Structured And Formatted</strong>
+    <span style="color: var(--muted); font-size: 13px;">· 155 comments</span>
+  </summary>
+  <div style="margin-top: 8px;"><div style="color: var(--muted); font-size: 13px; margin: 4px 0 8px;">Annotators valued responses that were well-organized and used clear visual layouts such as bullet points, numbered lists, bold headers, or logical paragraph structure.</div><div class="theme-sample">&ldquo;I chose this as it is more structured and well laid out, making it easier to read, and more trustworthy.&rdquo;</div><div class="theme-sample">&ldquo;bullet points makes it clearer and easier to follow&rdquo;</div><div class="theme-sample">&ldquo;I like the numbering - it makes it much more digestible&rdquo;</div><div class="theme-sample">&ldquo;Bold headlines are much easier to read.&rdquo;</div></div>
+</details>
+<details>
+  <summary>
+    <strong>Concise, Direct, And To The Point</strong>
+    <span style="color: var(--muted); font-size: 13px;">· 116 comments</span>
+  </summary>
+  <div style="margin-top: 8px;"><div style="color: var(--muted); font-size: 13px; margin: 4px 0 8px;">Annotators preferred responses that were appropriately brief, focused, and free of unnecessary padding, verbosity, or repetition.</div><div class="theme-sample">&ldquo;Straight to the point, it didn&#x27;t feel like any of it was filler.&rdquo;</div><div class="theme-sample">&ldquo;shorter and to the point, A is overly detailed&rdquo;</div><div class="theme-sample">&ldquo;A is too wordy. It&#x27;s hard to read.&rdquo;</div><div class="theme-sample">&ldquo;A gives info in a more concise manner while making it easy to understand and relate back to the question.&rdquo;</div></div>
+</details>
+<details>
+  <summary>
+    <strong>Natural, Human, And Appropriate Tone</strong>
+    <span style="color: var(--muted); font-size: 13px;">· 115 comments</span>
+  </summary>
+  <div style="margin-top: 8px;"><div style="color: var(--muted); font-size: 13px; margin: 4px 0 8px;">Annotators reacted to whether a response felt natural, warm, empathetic, and human versus robotic, overly formal, or obviously AI-generated, and whether the tone matched the context.</div><div class="theme-sample">&ldquo;The text is more in line with how a human would congratulate their friend, A has that corporate AI feel all over it&rdquo;</div><div class="theme-sample">&ldquo;It sounds more human and genuine.&rdquo;</div><div class="theme-sample">&ldquo;B is more empathetic and supportive, while A comes across as slightly overly motivational and less emotionally sensitive to the situation.&rdquo;</div><div class="theme-sample">&ldquo;B feels like more natural storytelling whereas A gives an AI generated impression.&rdquo;</div></div>
+</details>
+<details>
+  <summary>
+    <strong>Accuracy, Relevance, And Addressing The Prompt</strong>
+    <span style="color: var(--muted); font-size: 13px;">· 112 comments</span>
+  </summary>
+  <div style="margin-top: 8px;"><div style="color: var(--muted); font-size: 13px; margin: 4px 0 8px;">Annotators preferred responses that were factually correct, stayed on-topic, directly answered what was asked, and did not hallucinate or misunderstand the prompt.</div><div class="theme-sample">&ldquo;Response A is better because it correctly identifies that days get shorter in autumn, whereas Response B contains a fundamental logic error by claiming that days get longer.&rdquo;</div><div class="theme-sample">&ldquo;Response B is better because response A hallucinates specific personal details like a job and martial status that were not in the prompt.&rdquo;</div><div class="theme-sample">&ldquo;B doesn&#x27;t answer the prompt - it&#x27;s addressed to a student and not a teacher.&rdquo;</div><div class="theme-sample">&ldquo;A is more appropriate focused on why the user should learn a new language instead of how.&rdquo;</div></div>
+</details>
+<details>
+  <summary>
+    <strong>Clarity And Ease Of Understanding</strong>
+    <span style="color: var(--muted); font-size: 13px;">· 26 comments</span>
+  </summary>
+  <div style="margin-top: 8px;"><div style="color: var(--muted); font-size: 13px; margin: 4px 0 8px;">Annotators valued responses that were clear, simple, and easy to follow without being overly technical or convoluted.</div><div class="theme-sample">&ldquo;B explains how vaccines work in the step-by-step format by using simple plain languages, which is much easier to understand and follow.&rdquo;</div><div class="theme-sample">&ldquo;I find lists more direct and engaging. They&#x27;re easy to follow and understand&rdquo;</div><div class="theme-sample">&ldquo;B is hard to follow, too much to think about&rdquo;</div><div class="theme-sample">&ldquo;Easier to read and understand.&rdquo;</div></div>
+</details>
+<details>
+  <summary>
+    <strong>Vivid, Engaging, And Imaginative Writing</strong>
+    <span style="color: var(--muted); font-size: 13px;">· 21 comments</span>
+  </summary>
+  <div style="margin-top: 8px;"><div style="color: var(--muted); font-size: 13px; margin: 4px 0 8px;">Annotators preferred responses with strong imagery, evocative language, and creative appeal that drew them in and made them want to read more.</div><div class="theme-sample">&ldquo;The scene is better set and I am left wanting to read more about the city and the hero, Kaelin.&rdquo;</div><div class="theme-sample">&ldquo;B reads much better as a fantasy. The language is richer, it&#x27;s easier to read.&rdquo;</div><div class="theme-sample">&ldquo;Just sounds like a better gripping opening line for a novel.&rdquo;</div><div class="theme-sample">&ldquo;i felt like the smell of coffee and the birds singing gave me more of a connection to B.&rdquo;</div></div>
+</details>
+<details>
+  <summary>
+    <strong>Other / Mixed Feedback</strong>
+    <span style="color: var(--muted); font-size: 13px;">· 62 comments</span>
+  </summary>
+  <div style="margin-top: 8px;"><div style="color: var(--muted); font-size: 13px; margin: 4px 0 8px;">Comments that did not fit clearly into any main theme, including ties, both responses equally poor, objections to AI-generated content, or highly ambiguous reasoning.</div><div class="theme-sample">&ldquo;They both say the same thing using slightly different words. Nothing discernible in terms of quality between both.&rdquo;</div><div class="theme-sample">&ldquo;Both are equally bad.&rdquo;</div><div class="theme-sample">&ldquo;Both of theses responses are stupid. Write your own thoughts!!!!!!!!!!!!!&rdquo;</div><div class="theme-sample">&ldquo;this one comes down to, whatever happens to be my mood, of a given moment&rdquo;</div></div>
+</details>
+</section>
+<section class="section">
+  <h2>What this means</h2>
+  <p>The picture isn't "the metric is broken." <code>val_pref_acc</code>
+  points in the right direction (Spearman ρ = +0.80) — it's a fine
+  signal to <em>search</em> with. The failure mode is specific: near the top
+  it stops being able to distinguish recipes that are statistically separable
+  by humans, because at that scale it's measuring "GPT-4-likeness" more than
+  "humans like this."</p>
+
+  <h3>What the agent searches is shaped by how you prompt it</h3>
+  <p>The agent's 50-experiment run stayed within standard full-fine-tune DPO
+  and never proposed LoRA or data filtering on its own. The unlock wasn't
+  more compute or a different agent — it was a researcher asking the agent
+  a different question: "look at what you've tried and find what's missing."
+  The agent's response to <em>that</em> prompt was LoRA + data filtering. The
+  search space an agent explores is shaped as much by how a researcher frames
+  it as by the agent's loop itself; periodic meta-prompts — "what aren't you
+  trying?" — are how you widen it.</p>
+
+  <h3>Automated metrics are coarse selectors at the top</h3>
+  <p><span class="tag tag-collab">agent + researcher</span> Recipe C · LoRA + filtered data and <span class="tag tag-collab">agent + researcher</span> Recipe D · deeper LoRA + filtered data are statistically
+  separable by humans but inverted by the metric. 1507 Prolific
+  pairwise ratings — a few hundred dollars of annotation — flipped the
+  production decision. That's the standard preference-eval setup: humans
+  don't have to agree individually for the aggregate to be informative, and
+  the aggregate is what you ship from.</p>
+
+  <h3>Three places HITL adds value</h3>
+  <p>Not just one stage of the loop:</p>
+  <ul>
+    <li><strong>Research-time HITL</strong> — researcher prompting the agent
+        to inspect its own trajectory and identify what it isn't trying.</li>
+    <li><strong>Evaluation-time HITL</strong> — Prolific (or any structured
+        human eval) telling you which of the metric's top finalists actually
+        wins with users.</li>
+    <li><strong>Interpretation-time HITL</strong> — researcher reading
+        comments to figure out <em>why</em> humans preferred what they did
+        ("too verbose," "too structured," "felt natural") — feeds back into
+        the next iteration of the agent's design space.</li>
+  </ul>
+
+  <p>The combination is what produced the actual best recipe: agent for fast
+  search within a defined space, researcher to widen that space, Prolific to
+  pick the winner at the top, researcher again to understand what won.</p>
+</section>
+<section class="section">
+  <h2>Appendix</h2>
+  <p>The detail behind the summary — per-pair stats, ranking, agreement,
+  category breakdown, methodology.</p>
+
+  <details open>
+    <summary><strong>Per-pair preference results</strong></summary>
+    <p style="margin-top: 8px;">All 10 unique pairs, 50 prompts × 3 annotators
+    = 150 ratings each. "tracks" = higher-val recipe won at &gt; 50% with
+    Wilson 95% CI excluding chance. "flips" = lower-val recipe won. "noisy"
+    = CI overlaps 50%.</p>
+    <table style="table-layout: fixed;">
+      <colgroup>
+        <col style="width: 30%;">
+        <col style="width: 11%;">
+        <col style="width: 7%;">
+        <col style="width: 6%;">
+        <col style="width: 7%;">
+        <col style="width: 27%;">
+        <col style="width: 12%;">
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Pair (X vs Y)</th>
+          <th class='num'>Δ val_pref_acc</th>
+          <th class='num'>X wins</th>
+          <th class='num'>Ties</th>
+          <th class='num'>Y wins</th>
+          <th class='num'>Higher-val win rate (95% CI)</th>
+          <th>Signal</th>
+        </tr>
+      </thead>
+      <tbody>
+<tr>
+  <td><span class="tag tag-untrained">untrained</span> Original <small style="color:var(--muted)">vs</small> <span class="tag tag-agent">agent</span> Recipe B</td>
+  <td class='num'>-0.008</td>
+  <td class='num'>58</td>
+  <td class='num'>31</td>
+  <td class='num'>63</td>
+  <td class='num' style='white-space: nowrap;'>47.9% <small style="color:var(--muted)">[39.2, 56.8]</small></td>
+  <td><span class='pill tie'>noisy</span></td>
+</tr>
+<tr>
+  <td><span class="tag tag-untrained">untrained</span> Original <small style="color:var(--muted)">vs</small> <span class="tag tag-agent">agent</span> Recipe A</td>
+  <td class='num'>-0.036</td>
+  <td class='num'>62</td>
+  <td class='num'>22</td>
+  <td class='num'>69</td>
+  <td class='num' style='white-space: nowrap;'>47.3% <small style="color:var(--muted)">[39.0, 55.8]</small></td>
+  <td><span class='pill tie'>noisy</span></td>
+</tr>
+<tr>
+  <td><span class="tag tag-untrained">untrained</span> Original <small style="color:var(--muted)">vs</small> <span class="tag tag-collab">agent + researcher</span> Recipe C</td>
+  <td class='num'>+0.128</td>
+  <td class='num'>41</td>
+  <td class='num'>30</td>
+  <td class='num'>81</td>
+  <td class='num' style='white-space: nowrap;'>66.4% <small style="color:var(--muted)">[57.6, 74.2]</small></td>
+  <td><span class='pill good'>tracks</span></td>
+</tr>
+<tr>
+  <td><span class="tag tag-untrained">untrained</span> Original <small style="color:var(--muted)">vs</small> <span class="tag tag-collab">agent + researcher</span> Recipe D</td>
+  <td class='num'>+0.148</td>
+  <td class='num'>50</td>
+  <td class='num'>27</td>
+  <td class='num'>74</td>
+  <td class='num' style='white-space: nowrap;'>59.7% <small style="color:var(--muted)">[50.9, 67.9]</small></td>
+  <td><span class='pill good'>tracks</span></td>
+</tr>
+<tr>
+  <td><span class="tag tag-agent">agent</span> Recipe B <small style="color:var(--muted)">vs</small> <span class="tag tag-collab">agent + researcher</span> Recipe C</td>
+  <td class='num'>+0.136</td>
+  <td class='num'>62</td>
+  <td class='num'>22</td>
+  <td class='num'>65</td>
+  <td class='num' style='white-space: nowrap;'>51.2% <small style="color:var(--muted)">[42.6, 59.7]</small></td>
+  <td><span class='pill tie'>noisy</span></td>
+</tr>
+<tr>
+  <td><span class="tag tag-agent">agent</span> Recipe B <small style="color:var(--muted)">vs</small> <span class="tag tag-collab">agent + researcher</span> Recipe D</td>
+  <td class='num'>+0.156</td>
+  <td class='num'>67</td>
+  <td class='num'>26</td>
+  <td class='num'>58</td>
+  <td class='num' style='white-space: nowrap;'>46.4% <small style="color:var(--muted)">[37.9, 55.1]</small></td>
+  <td><span class='pill tie'>noisy</span></td>
+</tr>
+<tr>
+  <td><span class="tag tag-agent">agent</span> Recipe A <small style="color:var(--muted)">vs</small> <span class="tag tag-agent">agent</span> Recipe B</td>
+  <td class='num'>+0.028</td>
+  <td class='num'>55</td>
+  <td class='num'>32</td>
+  <td class='num'>64</td>
+  <td class='num' style='white-space: nowrap;'>53.8% <small style="color:var(--muted)">[44.8, 62.5]</small></td>
+  <td><span class='pill tie'>noisy</span></td>
+</tr>
+<tr>
+  <td><span class="tag tag-agent">agent</span> Recipe A <small style="color:var(--muted)">vs</small> <span class="tag tag-collab">agent + researcher</span> Recipe C</td>
+  <td class='num'>+0.164</td>
+  <td class='num'>48</td>
+  <td class='num'>26</td>
+  <td class='num'>73</td>
+  <td class='num' style='white-space: nowrap;'>60.3% <small style="color:var(--muted)">[51.4, 68.6]</small></td>
+  <td><span class='pill good'>tracks</span></td>
+</tr>
+<tr>
+  <td><span class="tag tag-agent">agent</span> Recipe A <small style="color:var(--muted)">vs</small> <span class="tag tag-collab">agent + researcher</span> Recipe D</td>
+  <td class='num'>+0.184</td>
+  <td class='num'>53</td>
+  <td class='num'>21</td>
+  <td class='num'>77</td>
+  <td class='num' style='white-space: nowrap;'>59.2% <small style="color:var(--muted)">[50.6, 67.3]</small></td>
+  <td><span class='pill good'>tracks</span></td>
+</tr>
+<tr>
+  <td><span class="tag tag-collab">agent + researcher</span> Recipe C <small style="color:var(--muted)">vs</small> <span class="tag tag-collab">agent + researcher</span> Recipe D</td>
+  <td class='num'>+0.020</td>
+  <td class='num'>57</td>
+  <td class='num'>31</td>
+  <td class='num'>62</td>
+  <td class='num' style='white-space: nowrap;'>52.1% <small style="color:var(--muted)">[43.2, 60.9]</small></td>
+  <td><span class='pill tie'>noisy</span></td>
+</tr></tbody>
+    </table>
+  </details>
+
+  <details>
+    <summary><strong>Bradley-Terry global ranking</strong></summary>
+    <p style="margin-top: 8px;">Combines all pairwise outcomes into a single
+    ranking. Higher BT strength = humans preferred this recipe more often
+    across the whole study.</p>
+    <table style="table-layout: fixed; max-width: 720px;">
+      <colgroup>
+        <col style="width: 12%;">
+        <col style="width: 46%;">
+        <col style="width: 21%;">
+        <col style="width: 21%;">
+      </colgroup>
+      <thead><tr><th>Rank</th><th>Recipe</th><th class='num'>BT strength</th><th class='num'>val_pref_acc</th></tr></thead>
+      <tbody><tr><td>1</td><td style='white-space: nowrap;'><span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>1.173</td><td class='num'>0.628</td></tr><tr><td>2</td><td style='white-space: nowrap;'><span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>1.113</td><td class='num'>0.648</td></tr><tr><td>3</td><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe B</td><td class='num'>1.043</td><td class='num'>0.492</td></tr><tr><td>4</td><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A</td><td class='num'>0.862</td><td class='num'>0.464</td></tr><tr><td>5</td><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original</td><td class='num'>0.809</td><td class='num'>0.500</td></tr></tbody>
+    </table>
+    <div id="bt-chart" style="height:340px; margin-top: 12px;"></div>
+  </details>
+
+  <details>
+    <summary><strong>Inter-annotator agreement (Fleiss' κ)</strong></summary>
+    <p style="margin-top: 8px;">Annotators within a single pair frequently
+    disagreed — taste is heterogeneous. Low κ tells you taste varies at the
+    per-scenario level; it doesn't invalidate the aggregate signal, which is
+    averaged over hundreds of ratings.</p>
+    <table style="table-layout: fixed;">
+      <colgroup>
+        <col style="width: 52%;">
+        <col style="width: 16%;">
+        <col style="width: 18%;">
+        <col style="width: 14%;">
+      </colgroup>
+      <thead><tr><th>Pair</th><th class='num'>Fleiss' κ</th><th>Agreement</th><th class='num'>n items</th></tr></thead>
+      <tbody>
+<tr>
+  <td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-agent">agent</span> Recipe B</td>
+  <td class='num'><span class='kappa'>κ = +0.152</span></td>
+  <td><span class='pill bad'>poor</span></td>
+  <td class='num'>46</td>
+</tr>
+<tr>
+  <td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-agent">agent</span> Recipe A</td>
+  <td class='num'><span class='kappa'>κ = +0.242</span></td>
+  <td><span class='pill tie'>fair</span></td>
+  <td class='num'>47</td>
+</tr>
+<tr>
+  <td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td>
+  <td class='num'><span class='kappa'>κ = +0.167</span></td>
+  <td><span class='pill bad'>poor</span></td>
+  <td class='num'>48</td>
+</tr>
+<tr>
+  <td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td>
+  <td class='num'><span class='kappa'>κ = +0.078</span></td>
+  <td><span class='pill bad'>poor</span></td>
+  <td class='num'>49</td>
+</tr>
+<tr>
+  <td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe B vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td>
+  <td class='num'><span class='kappa'>κ = +0.050</span></td>
+  <td><span class='pill bad'>poor</span></td>
+  <td class='num'>47</td>
+</tr>
+<tr>
+  <td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe B vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td>
+  <td class='num'><span class='kappa'>κ = +0.067</span></td>
+  <td><span class='pill bad'>poor</span></td>
+  <td class='num'>49</td>
+</tr>
+<tr>
+  <td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-agent">agent</span> Recipe B</td>
+  <td class='num'><span class='kappa'>κ = +0.081</span></td>
+  <td><span class='pill bad'>poor</span></td>
+  <td class='num'>49</td>
+</tr>
+<tr>
+  <td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td>
+  <td class='num'><span class='kappa'>κ = +0.182</span></td>
+  <td><span class='pill bad'>poor</span></td>
+  <td class='num'>47</td>
+</tr>
+<tr>
+  <td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td>
+  <td class='num'><span class='kappa'>κ = +0.244</span></td>
+  <td><span class='pill tie'>fair</span></td>
+  <td class='num'>49</td>
+</tr>
+<tr>
+  <td style='white-space: nowrap;'><span class="tag tag-collab">agent + researcher</span> Recipe C vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td>
+  <td class='num'><span class='kappa'>κ = +0.138</span></td>
+  <td><span class='pill bad'>poor</span></td>
+  <td class='num'>50</td>
+</tr></tbody>
+    </table>
+  </details>
+
+  <details>
+    <summary><strong>Per prompt category</strong></summary>
+    <p style="margin-top: 8px;">How the preference pattern shifts by prompt
+    type. Higher-val win rate &lt; 50% = humans systematically picked the
+    lower-scoring recipe in that category.</p>
+    
+<details>
+  <summary><strong>common factual</strong></summary>
+  <table style="margin-top: 8px;">
+    <thead><tr><th>Pair</th><th class='num'>X/tie/Y</th><th class='num'>Higher-val win rate</th></tr></thead>
+    <tbody><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-agent">agent</span> Recipe B</td><td class='num'>3/2/10</td><td class='num'>23%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-agent">agent</span> Recipe A</td><td class='num'>12/1/2</td><td class='num'>86%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>6/2/8</td><td class='num'>57%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>3/3/9</td><td class='num'>75%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe B vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>10/1/4</td><td class='num'>29%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe B vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>11/1/4</td><td class='num'>27%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-agent">agent</span> Recipe B</td><td class='num'>1/3/11</td><td class='num'>92%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>3/1/11</td><td class='num'>79%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>3/1/11</td><td class='num'>79%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-collab">agent + researcher</span> Recipe C vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>7/3/5</td><td class='num'>42%</td></tr></tbody>
+  </table>
+</details>
+<details>
+  <summary><strong>creative writing</strong></summary>
+  <table style="margin-top: 8px;">
+    <thead><tr><th>Pair</th><th class='num'>X/tie/Y</th><th class='num'>Higher-val win rate</th></tr></thead>
+    <tbody><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-agent">agent</span> Recipe B</td><td class='num'>10/3/11</td><td class='num'>48%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-agent">agent</span> Recipe A</td><td class='num'>13/6/5</td><td class='num'>72%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>12/4/9</td><td class='num'>43%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>10/6/8</td><td class='num'>44%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe B vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>15/3/6</td><td class='num'>29%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe B vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>13/3/8</td><td class='num'>38%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-agent">agent</span> Recipe B</td><td class='num'>3/7/14</td><td class='num'>82%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>7/6/11</td><td class='num'>61%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>5/10/9</td><td class='num'>64%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-collab">agent + researcher</span> Recipe C vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>12/4/8</td><td class='num'>40%</td></tr></tbody>
+  </table>
+</details>
+<details>
+  <summary><strong>emotional tone</strong></summary>
+  <table style="margin-top: 8px;">
+    <thead><tr><th>Pair</th><th class='num'>X/tie/Y</th><th class='num'>Higher-val win rate</th></tr></thead>
+    <tbody><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-agent">agent</span> Recipe B</td><td class='num'>5/3/7</td><td class='num'>42%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-agent">agent</span> Recipe A</td><td class='num'>3/2/10</td><td class='num'>23%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>5/1/9</td><td class='num'>64%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>6/2/7</td><td class='num'>54%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe B vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>8/1/6</td><td class='num'>43%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe B vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>4/6/5</td><td class='num'>56%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-agent">agent</span> Recipe B</td><td class='num'>6/4/5</td><td class='num'>45%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>12/0/2</td><td class='num'>14%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>9/2/4</td><td class='num'>31%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-collab">agent + researcher</span> Recipe C vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>2/3/10</td><td class='num'>83%</td></tr></tbody>
+  </table>
+</details>
+<details>
+  <summary><strong>light planning</strong></summary>
+  <table style="margin-top: 8px;">
+    <thead><tr><th>Pair</th><th class='num'>X/tie/Y</th><th class='num'>Higher-val win rate</th></tr></thead>
+    <tbody><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-agent">agent</span> Recipe B</td><td class='num'>7/2/3</td><td class='num'>70%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-agent">agent</span> Recipe A</td><td class='num'>4/1/7</td><td class='num'>36%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>4/1/7</td><td class='num'>64%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>5/3/4</td><td class='num'>44%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe B vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>4/3/5</td><td class='num'>56%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe B vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>6/3/3</td><td class='num'>33%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-agent">agent</span> Recipe B</td><td class='num'>5/1/6</td><td class='num'>55%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>4/3/5</td><td class='num'>56%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>3/1/9</td><td class='num'>75%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-collab">agent + researcher</span> Recipe C vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>2/3/7</td><td class='num'>78%</td></tr></tbody>
+  </table>
+</details>
+<details>
+  <summary><strong>pedagogical clarity</strong></summary>
+  <table style="margin-top: 8px;">
+    <thead><tr><th>Pair</th><th class='num'>X/tie/Y</th><th class='num'>Higher-val win rate</th></tr></thead>
+    <tbody><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-agent">agent</span> Recipe B</td><td class='num'>11/6/6</td><td class='num'>65%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-agent">agent</span> Recipe A</td><td class='num'>6/5/14</td><td class='num'>30%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>4/11/9</td><td class='num'>69%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>12/5/8</td><td class='num'>40%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe B vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>11/2/12</td><td class='num'>52%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe B vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>11/3/10</td><td class='num'>48%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-agent">agent</span> Recipe B</td><td class='num'>13/3/8</td><td class='num'>38%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>6/8/10</td><td class='num'>62%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>9/1/14</td><td class='num'>61%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-collab">agent + researcher</span> Recipe C vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>17/1/6</td><td class='num'>26%</td></tr></tbody>
+  </table>
+</details>
+<details>
+  <summary><strong>personal advice</strong></summary>
+  <table style="margin-top: 8px;">
+    <thead><tr><th>Pair</th><th class='num'>X/tie/Y</th><th class='num'>Higher-val win rate</th></tr></thead>
+    <tbody><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-agent">agent</span> Recipe B</td><td class='num'>8/9/8</td><td class='num'>50%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-agent">agent</span> Recipe A</td><td class='num'>15/4/6</td><td class='num'>71%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>3/6/15</td><td class='num'>83%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>4/5/15</td><td class='num'>79%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe B vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>5/5/13</td><td class='num'>72%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe B vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>7/7/10</td><td class='num'>59%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-agent">agent</span> Recipe B</td><td class='num'>7/6/11</td><td class='num'>61%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>5/4/15</td><td class='num'>75%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>6/4/14</td><td class='num'>70%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-collab">agent + researcher</span> Recipe C vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>8/8/8</td><td class='num'>50%</td></tr></tbody>
+  </table>
+</details>
+<details>
+  <summary><strong>persuasive opinion</strong></summary>
+  <table style="margin-top: 8px;">
+    <thead><tr><th>Pair</th><th class='num'>X/tie/Y</th><th class='num'>Higher-val win rate</th></tr></thead>
+    <tbody><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-agent">agent</span> Recipe B</td><td class='num'>9/2/11</td><td class='num'>45%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-agent">agent</span> Recipe A</td><td class='num'>5/3/14</td><td class='num'>26%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>3/4/14</td><td class='num'>82%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>5/2/14</td><td class='num'>74%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe B vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>5/2/13</td><td class='num'>72%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe B vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>4/3/14</td><td class='num'>78%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-agent">agent</span> Recipe B</td><td class='num'>12/6/3</td><td class='num'>20%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>10/3/7</td><td class='num'>41%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>12/1/8</td><td class='num'>40%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-collab">agent + researcher</span> Recipe C vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>7/4/10</td><td class='num'>59%</td></tr></tbody>
+  </table>
+</details>
+<details>
+  <summary><strong>sensory descriptive</strong></summary>
+  <table style="margin-top: 8px;">
+    <thead><tr><th>Pair</th><th class='num'>X/tie/Y</th><th class='num'>Higher-val win rate</th></tr></thead>
+    <tbody><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-agent">agent</span> Recipe B</td><td class='num'>5/4/7</td><td class='num'>42%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-agent">agent</span> Recipe A</td><td class='num'>4/0/11</td><td class='num'>27%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>4/1/10</td><td class='num'>71%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-untrained">untrained</span> Original vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>5/1/9</td><td class='num'>64%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe B vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>4/5/6</td><td class='num'>60%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe B vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>11/0/4</td><td class='num'>27%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-agent">agent</span> Recipe B</td><td class='num'>8/2/6</td><td class='num'>43%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-collab">agent + researcher</span> Recipe C</td><td class='num'>1/1/12</td><td class='num'>92%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-agent">agent</span> Recipe A vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>6/1/8</td><td class='num'>57%</td></tr><tr><td style='white-space: nowrap;'><span class="tag tag-collab">agent + researcher</span> Recipe C vs <span class="tag tag-collab">agent + researcher</span> Recipe D</td><td class='num'>2/5/8</td><td class='num'>80%</td></tr></tbody>
+  </table>
+</details>
+  </details>
+
+  <details>
+    <summary><strong>Why we used val_pref_acc</strong></summary>
+    <p style="margin-top: 8px;">Karpathy's autoresearch uses
+    <code>val_bpb</code> — held-out cross-entropy in bits per byte — because
+    it's pretraining. Our task is DPO fine-tuning, so the natural analog is
+    <code>val_pref_acc</code>: on a held-out preference set, what fraction
+    does the policy "agree" with — i.e., assign higher implicit reward to the
+    chosen response than the rejected one. Both metrics measure
+    fit-to-held-out-data. The question for both is the same: does fit to the
+    validation set track what people actually want?</p>
+    <table>
+      <thead><tr><th style="width:20%;"></th><th>Karpathy's autoresearch</th><th>This study</th></tr></thead>
+      <tbody>
+        <tr><td>Task</td><td>Pretraining (LM)</td><td>DPO fine-tuning</td></tr>
+        <tr><td>Held-out data</td><td>Validation web text</td><td>UltraFeedback test_prefs</td></tr>
+        <tr><td>Metric</td><td><code>val_bpb</code> ↓</td><td><code>val_pref_acc</code> ↑</td></tr>
+        <tr><td>Interpretation</td><td>How well does it predict text?</td><td>How often does it agree with the preference labels?</td></tr>
+      </tbody>
+    </table>
+  </details>
+
+  <details>
+    <summary><strong>Methodology</strong></summary>
+    <div class="method" style="margin-top: 8px;">
+      <ul>
+        <li><strong>Base model:</strong> SmolLM2-360M-Instruct (HuggingFaceTB).
+          4 DPO-trained variants + the untrained base = 5 models.</li>
+        <li><strong>Agent stage:</strong> autoresearch (Claude editing
+          <code>train.py</code>) ran 50 experiments — ~9.5 min of agent
+          reasoning per call plus DPO training between calls; 45 calls
+          produced a valid response, 5 hit empty-response failures. Total
+          Claude API cost: $19.25. (Wall-clock spanned May 8–9 with the run
+          paused for ~10h between experiments 23 and 24; usable runtime is
+          ~8h.) We kept 2 checkpoints: Recipe A
+          (default DPO, val_pref_acc = 0.464)
+          and Recipe B (the agent's best, val_pref_acc
+          = 0.492). Both stayed below the
+          untrained reference's 0.500.</li>
+        <li><strong>Researcher + agent stage:</strong> researcher prompted
+          the agent to inspect its own trajectory and look for gaps; the
+          agent proposed two design-space expansions — LoRA adapters and
+          score-margin-filtered UltraFeedback (margin ≥ 2). Same training
+          loop. Produced Recipe C (LoRA r=32) and
+          Recipe D (LoRA r=64, α=128).</li>
+        <li><strong>Prompt set:</strong> 50 general-audience prompts across 8
+          categories (creative writing, personal advice, pedagogy, sensory
+          descriptive, persuasive, emotional tone, light planning, common
+          factual). See <code>prolific_prompts.json</code>.</li>
+        <li><strong>Generation:</strong> per-model sampling seeds; EOS-stopping
+          (no truncation). <code>temperature=0.7, top_p=0.9,
+          repetition_penalty=1.05</code>.</li>
+        <li><strong>Pairing:</strong> C(5,2) = 10 unique pairs × 50 prompts =
+          500 pair instances × 3 annotators = 1500 annotations.</li>
+        <li><strong>UI:</strong> Prolific participants saw the prompt + two
+          responses (A and B), made a forced 3-way choice (A better / About
+          equal / B better) with optional comment. A/B display order
+          randomized per participant via stable hash.</li>
+        <li><strong>Statistics:</strong> Wilson 95% CIs on per-pair preference
+          rates; Bradley-Terry via Hunter MM for global ranking; Fleiss' κ per
+          pair for IAA; Spearman ρ over trained recipes only.</li>
+        <li><strong>Source:</strong> annotations loaded from
+          <code>/Users/norapetrova/Projects/experiments/research-agent-autoresearch/autoresearch-mlx/eval_data/phase2/report/annotations_real.json</code>.</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+
+</div>
+<script>
+(function() {
+  var data = [{
+    x: [0.464, 0.492, 0.628, 0.648],
+    y: [0.5267175572519084, 0.5206611570247934, 0.6639344262295082, 0.5967741935483871],
+    text: ["Recipe A", "Recipe B", "Recipe C", "Recipe D"],
+    mode: 'markers+text',
+    type: 'scatter',
+    textposition: 'top center',
+    marker: { size: 14, color: ["#2f6fb8", "#2f6fb8", "#b85c00", "#b85c00"], line: { color: '#1a1a1a', width: 1 } },
+    hovertemplate: '%{text}<br>val_pref_acc=%{x:.3f}<br>vs-base win rate=%{y:.2f}<extra></extra>',
+  }];
+  var layout = {
+    margin: {t: 20, l: 60, r: 20, b: 50},
+    xaxis: { title: 'val_pref_acc (autoresearch metric)', range: [0.44, 0.68], zeroline: false },
+    yaxis: { title: 'Human preference vs base (excl. ties)', range: [0, 1], zeroline: false,
+              tickformat: '.0%' },
+    shapes: [
+      { type: 'line', xref: 'paper', x0: 0, x1: 1, y0: 0.5, y1: 0.5,
+         line: { color: '#888', width: 1, dash: 'dot' } },
+      { type: 'line', xref: 'x', yref: 'paper', x0: 0.5, x1: 0.5, y0: 0, y1: 1,
+         line: { color: '#888', width: 1, dash: 'dot' } }
+    ],
+    annotations: [
+      { xref: 'paper', yref: 'y', x: 0.99, y: 0.5, text: 'humans: chance vs base',
+         showarrow: false, font: { size: 11, color: '#888' },
+         xanchor: 'right', yanchor: 'bottom' },
+      { xref: 'x', yref: 'paper', x: 0.5, y: 0.02, text: 'metric: chance (untrained)',
+         showarrow: false, font: { size: 11, color: '#888' },
+         xanchor: 'left', yanchor: 'bottom', textangle: -90 }
+    ],
+    plot_bgcolor: '#fff', paper_bgcolor: '#fff',
+    font: { family: '-apple-system, system-ui, sans-serif', size: 13 },
+  };
+  Plotly.newPlot('headline-chart', data, layout, {displayModeBar: false, responsive: true});
+
+  var btData = [{
+    x: [0.464, 0.492, 0.628, 0.648],
+    y: [0.8623494595865299, 1.0432578318949035, 1.1728131357279115, 1.1128861731033877],
+    text: ["Recipe A", "Recipe B", "Recipe C", "Recipe D"],
+    mode: 'markers+text',
+    type: 'scatter',
+    textposition: 'top center',
+    marker: { size: 14, color: ["#2f6fb8", "#2f6fb8", "#b85c00", "#b85c00"], line: { color: '#1a1a1a', width: 1 } },
+    hovertemplate: '%{text}<br>val_pref_acc=%{x:.3f}<br>BT strength=%{y:.3f}<extra></extra>',
+  }];
+  var btLayout = {
+    margin: {t: 20, l: 60, r: 20, b: 50},
+    xaxis: { title: 'val_pref_acc (autoresearch metric)', range: [0.44, 0.68], zeroline: false },
+    yaxis: { title: 'Bradley-Terry strength (human pref)', zeroline: false },
+    plot_bgcolor: '#fff', paper_bgcolor: '#fff',
+    font: { family: '-apple-system, system-ui, sans-serif', size: 13 },
+  };
+  Plotly.newPlot('bt-chart', btData, btLayout, {displayModeBar: false, responsive: true});
+})();
+</script>
+</body>
+</html>

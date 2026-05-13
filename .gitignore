@@ -23,6 +23,10 @@ eval_data/phase2/_PREVIEW*
 eval_data/phase2/pairs_for_claude.txt
 eval_data/phase2/prolific_generations_PREVIEW.json
 report/
+# Phase 2 final-report artifacts are tracked (script outputs + slack tldr),
+# but the raw annotations file is kept local because it contains Prolific PIDs.
+!eval_data/phase2/report/
+eval_data/phase2/report/annotations_*.json
 
 # Pipeline outputs (regenerated)
 annotations_*.json

@@ -1,0 +1,95 @@
+{
+  "themes": [
+    {
+      "label": "More Detailed, Thorough, And Informative",
+      "description": "Annotators preferred responses that provided greater depth, comprehensiveness, specificity, and informative content.",
+      "count": 181,
+      "quotes": [
+        "A was very expressive, touch so many points B didn't touch",
+        "A provides a real, fleshed-out, example of what to try by e.g detailing the Pomodoro technique. B is a close second with a similar list but less detail",
+        "Option A is better because its more comprehensive, it covers a wider range of evidence based benefits",
+        "B explained the process quite a bit better and had a more comprehensive answer."
+      ]
+    },
+    {
+      "label": "Better Structured And Formatted",
+      "description": "Annotators valued responses that were well-organized and used clear visual layouts such as bullet points, numbered lists, bold headers, or logical paragraph structure.",
+      "count": 155,
+      "quotes": [
+        "I chose this as it is more structured and well laid out, making it easier to read, and more trustworthy.",
+        "bullet points makes it clearer and easier to follow",
+        "I like the numbering - it makes it much more digestible",
+        "Bold headlines are much easier to read."
+      ]
+    },
+    {
+      "label": "Concise, Direct, And To The Point",
+      "description": "Annotators preferred responses that were appropriately brief, focused, and free of unnecessary padding, verbosity, or repetition.",
+      "count": 116,
+      "quotes": [
+        "Straight to the point, it didn't feel like any of it was filler.",
+        "shorter and to the point, A is overly detailed",
+        "A is too wordy. It's hard to read.",
+        "A gives info in a more concise manner while making it easy to understand and relate back to the question."
+      ]
+    },
+    {
+      "label": "Natural, Human, And Appropriate Tone",
+      "description": "Annotators reacted to whether a response felt natural, warm, empathetic, and human versus robotic, overly formal, or obviously AI-generated, and whether the tone matched the context.",
+      "count": 115,
+      "quotes": [
+        "The text is more in line with how a human would congratulate their friend, A has that corporate AI feel all over it",
+        "It sounds more human and genuine.",
+        "B is more empathetic and supportive, while A comes across as slightly overly motivational and less emotionally sensitive to the situation.",
+        "B feels like more natural storytelling whereas A gives an AI generated impression."
+      ]
+    },
+    {
+      "label": "Accuracy, Relevance, And Addressing The Prompt",
+      "description": "Annotators preferred responses that were factually correct, stayed on-topic, directly answered what was asked, and did not hallucinate or misunderstand the prompt.",
+      "count": 112,
+      "quotes": [
+        "Response A is better because it correctly identifies that days get shorter in autumn, whereas Response B contains a fundamental logic error by claiming that days get longer.",
+        "Response B is better because response A hallucinates specific personal details like a job and martial status that were not in the prompt.",
+        "B doesn't answer the prompt - it's addressed to a student and not a teacher.",
+        "A is more appropriate focused on why the user should learn a new language instead of how."
+      ]
+    },
+    {
+      "label": "Clarity And Ease Of Understanding",
+      "description": "Annotators valued responses that were clear, simple, and easy to follow without being overly technical or convoluted.",
+      "count": 26,
+      "quotes": [
+        "B explains how vaccines work in the step-by-step format by using simple plain languages, which is much easier to understand and follow.",
+        "I find lists more direct and engaging. They're easy to follow and understand",
+        "B is hard to follow, too much to think about",
+        "Easier to read and understand."
+      ]
+    },
+    {
+      "label": "Vivid, Engaging, And Imaginative Writing",
+      "description": "Annotators preferred responses with strong imagery, evocative language, and creative appeal that drew them in and made them want to read more.",
+      "count": 21,
+      "quotes": [
+        "The scene is better set and I am left wanting to read more about the city and the hero, Kaelin.",
+        "B reads much better as a fantasy. The language is richer, it's easier to read.",
+        "Just sounds like a better gripping opening line for a novel.",
+        "i felt like the smell of coffee and the birds singing gave me more of a connection to B."
+      ]
+    },
+    {
+      "label": "Other / Mixed Feedback",
+      "description": "Comments that did not fit clearly into any main theme, including ties, both responses equally poor, objections to AI-generated content, or highly ambiguous reasoning.",
+      "count": 62,
+      "quotes": [
+        "They both say the same thing using slightly different words. Nothing discernible in terms of quality between both.",
+        "Both are equally bad.",
+        "Both of theses responses are stupid. Write your own thoughts!!!!!!!!!!!!!",
+        "this one comes down to, whatever happens to be my mood, of a given moment"
+      ]
+    }
+  ],
+  "n_comments": 856,
+  "n_batches": 8,
+  "model": "claude-sonnet-4-6"
+}
